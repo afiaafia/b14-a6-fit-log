@@ -1,9 +1,12 @@
-import type { Metadata } from "next";
-import "./globals.css";
+import type { Metadata } from 'next';
+import './globals.css';
+import Navbar from '@/components/navbar/Navbar';
+import { FitLogProvider } from '@/context/FitLogContext';
 
 export const metadata: Metadata = {
-  title: "FitLog",
-  description: "Workout Library and Planning App",
+  title: 'FitLog | Workout Library',
+  description:
+    'Discover workouts, build your plan, and track every set with FitLog.',
 };
 
 export default function RootLayout({
@@ -13,7 +16,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <FitLogProvider>
+          <Navbar />
+          <main>{children}</main>
+        </FitLogProvider>
+      </body>
     </html>
   );
 }
