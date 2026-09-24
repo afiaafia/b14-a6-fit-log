@@ -28,31 +28,31 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[#292b2f] bg-[#111214]">
-      <div className="container-fitlog">
-        <div className="relative flex h-10 items-center justify-between">
+    <header className="border-b border-[#1F242D] bg-[#0D0F12]">
+      <div className="mx-auto w-full max-w-[1200px] px-6">
+        <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link
             href="/"
             onClick={closeMobileMenu}
-            className="flex items-center gap-1.5"
+            className="flex items-center gap-2"
           >
             <Image
               src="/icons/logo.png"
               alt="FitLog logo"
-              width={16}
-              height={16}
-              className="h-4 w-4 object-contain"
+              width={20}
+              height={20}
+              className="h-5 w-5 object-contain"
               priority
             />
 
-            <span className="text-[8px] font-bold uppercase tracking-[0.08em] text-white">
-              FitLog
+            <span className="text-base font-bold uppercase tracking-tight text-white">
+              FITLOG
             </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-1 md:flex">
+          <nav className="hidden items-center gap-2 md:flex">
             {navItems.map((item) => {
               const isActive =
                 item.href === '/'
@@ -63,11 +63,11 @@ export default function Navbar() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`rounded-full px-3 py-1 text-[7px] font-semibold uppercase tracking-[0.04em] ${
+                  className={
                     isActive
-                      ? 'bg-[#ccff00] text-[#111214]'
-                      : 'text-[#777b82] hover:text-white'
-                  }`}
+                      ? 'rounded-full bg-[#1A2112] px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-[#CCFF00] transition-colors'
+                      : 'rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-[#9CA3AF] transition-colors hover:text-white'
+                  }
                 >
                   {item.label}
                 </Link>
@@ -75,44 +75,47 @@ export default function Navbar() {
             })}
           </nav>
 
-          {/* Status */}
-          <div className="hidden items-center gap-3 md:flex">
+          {/* Desktop Counters */}
+          <div className="hidden items-center gap-4 md:flex">
             <Link
               href="/my-plan"
-              className="flex items-center gap-1 text-[7px] font-semibold uppercase text-[#777b82]"
+              className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[#9CA3AF] transition-colors hover:text-white"
             >
-              Plan
-              <span className="flex h-3 min-w-3 items-center justify-center rounded-full bg-[#ccff00] px-1 text-[6px] font-bold text-[#111214]">
+              <span>PLAN</span>
+
+              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#1A2112] px-1.5 text-[10px] font-bold text-[#CCFF00]">
                 {planCount}
               </span>
             </Link>
 
             <Link
               href="/my-plan"
-              className="flex items-center gap-1 rounded-full border border-[#34373b] px-2 py-0.5 text-[7px] font-semibold uppercase text-[#777b82]"
+              className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[#9CA3AF] transition-colors hover:text-white"
             >
-              Saved
-              <span className="flex h-3 min-w-3 items-center justify-center rounded-full border border-[#45494f] px-1 text-[6px] text-[#777b82]">
+              <span>SAVED</span>
+
+              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#1A2112] px-1.5 text-[10px] font-bold text-[#CCFF00]">
                 {savedCount}
               </span>
             </Link>
           </div>
 
-          {/* Mobile */}
+          {/* Mobile Menu Button */}
           <button
             type="button"
             aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={mobileOpen}
             onClick={() => setMobileOpen((open) => !open)}
-            className="rounded p-1 text-[#777b82] md:hidden"
+            className="rounded-md p-2 text-[#9CA3AF] transition-colors hover:bg-[#16191E] hover:text-white md:hidden"
           >
-            {mobileOpen ? <X size={15} /> : <Menu size={15} />}
+            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
 
+        {/* Mobile Navigation */}
         {mobileOpen && (
-          <div className="border-t border-[#292b2f] py-2 md:hidden">
-            <nav className="flex flex-col gap-1">
+          <div className="border-t border-[#1F242D] py-4 md:hidden">
+            <nav className="flex flex-col gap-2">
               {navItems.map((item) => {
                 const isActive =
                   item.href === '/'
@@ -124,25 +127,25 @@ export default function Navbar() {
                     key={item.href}
                     href={item.href}
                     onClick={closeMobileMenu}
-                    className={`rounded-md px-3 py-2 text-[8px] font-semibold uppercase ${
+                    className={
                       isActive
-                        ? 'bg-[#ccff00] text-[#111214]'
-                        : 'text-[#777b82]'
-                    }`}
+                        ? 'rounded-full bg-[#1A2112] px-3 py-2 text-xs font-bold uppercase tracking-wider text-[#CCFF00]'
+                        : 'rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-wider text-[#9CA3AF]'
+                    }
                   >
                     {item.label}
                   </Link>
                 );
               })}
 
-              <div className="mt-1 flex gap-2 border-t border-[#292b2f] pt-2">
+              <div className="mt-2 flex gap-4 border-t border-[#1F242D] pt-4">
                 <Link
                   href="/my-plan"
                   onClick={closeMobileMenu}
-                  className="flex flex-1 items-center justify-center gap-1 rounded-md border border-[#34373b] py-2 text-[8px] font-semibold uppercase text-[#8d9298]"
+                  className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#9CA3AF]"
                 >
-                  Plan
-                  <span className="rounded-full bg-[#ccff00] px-1 text-[6px] font-bold text-[#111214]">
+                  PLAN
+                  <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#1A2112] px-1.5 text-[10px] font-bold text-[#CCFF00]">
                     {planCount}
                   </span>
                 </Link>
@@ -150,10 +153,10 @@ export default function Navbar() {
                 <Link
                   href="/my-plan"
                   onClick={closeMobileMenu}
-                  className="flex flex-1 items-center justify-center gap-1 rounded-md border border-[#34373b] py-2 text-[8px] font-semibold uppercase text-[#8d9298]"
+                  className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#9CA3AF]"
                 >
-                  Saved
-                  <span className="rounded-full border border-[#45494f] px-1 text-[6px]">
+                  SAVED
+                  <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#1A2112] px-1.5 text-[10px] font-bold text-[#CCFF00]">
                     {savedCount}
                   </span>
                 </Link>
