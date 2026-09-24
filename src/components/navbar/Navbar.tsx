@@ -1,7 +1,8 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
-import { Dumbbell, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { useFitLog } from '@/context/FitLogContext';
@@ -36,8 +37,15 @@ export default function Navbar() {
             onClick={closeMobileMenu}
             className="flex items-center gap-2"
           >
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-900 text-white">
-              <Dumbbell size={19} strokeWidth={2.5} />
+            <span className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl">
+              <Image
+                src="/icons/logo.png"
+                alt="FitLog logo"
+                width={40}
+                height={40}
+                className="h-10 w-10 object-contain"
+                priority
+              />
             </span>
 
             <span className="text-lg font-bold tracking-tight text-slate-900">
