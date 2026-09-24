@@ -2,19 +2,19 @@ import type { Workout } from '@/types/workout';
 
 const API_URL = 'https://api.abcz.workers.dev/api/fitlog';
 
-const localWorkoutImages: Record<string, string> = {
-  'Bicycle Crunches': '/images/Bicycle Crunches.jpg',
-  'Bodyweight Squats': '/images/Bodyweight Squats.webp',
-  Burpees: '/images/Burpees.jpg',
-  'Glute Bridge': '/images/Glute Bridge.jpg',
-  'High Knees': '/images/High Knees.jpg',
-  'Jumping Jacks': '/images/Jumping Jacks.avif',
-  'Leg Raises': '/images/Leg Raises.webp',
-  Lunges: '/images/Lunges.jpg',
-  'Mountain Climbers': '/images/Mountain Climbers.webp',
-  Plank: '/images/Plank.jpg',
-  'Push-Ups': '/images/Push-Ups.jpg',
-  'Russian Twists': '/images/Russian Twists.avif',
+const workoutImages: Record<string, string> = {
+  'Bicycle Crunches': '/images/general/Bicycle Crunches.jpg',
+  'Bodyweight Squats': '/images/general/Bodyweight Squats.webp',
+  Burpees: '/images/general/Burpees.jpg',
+  'Glute Bridge': '/images/general/Glute Bridge.jpg',
+  'High Knees': '/images/general/High Knees.jpg',
+  'Jumping Jacks': '/images/general/Jumping Jacks.avif',
+  'Leg Raises': '/images/general/Leg Raises.webp',
+  Lunges: '/images/general/Lunges.jpg',
+  'Mountain Climbers': '/images/general/Mountain Climbers.webp',
+  Plank: '/images/general/Plank.jpg',
+  'Push-Ups': '/images/general/Push-Ups.jpg',
+  'Russian Twists': '/images/general/Russian Twists.avif',
 };
 
 const fallbackImage = '/images/banner.png';
