@@ -1,7 +1,5 @@
 import type { Workout } from '@/types/workout';
 
-const API_URL = 'https://api.abcz.workers.dev/api/fitlog';
-
 const workoutImages: Record<string, string> = {
   'Bicycle Crunches': '/images/general/Bicycle Crunches.jpg',
   'Bodyweight Squats': '/images/general/Bodyweight Squats.webp',
@@ -17,21 +15,12 @@ const workoutImages: Record<string, string> = {
   'Russian Twists': '/images/general/Russian Twists.avif',
 };
 
-const fallbackImage = '/images/banner.png';
-
-function getLocalWorkoutImage(name: string): string {
-  return localWorkoutImages[name] ?? fallbackImage;
-}
-
-function applyLocalImages(workouts: Workout[]): Workout[] {
-  return workouts.map((workout) => ({
-    ...workout,
-    image: getLocalWorkoutImage(workout.name),
-  }));
-}
+const getLocalWorkoutImage = (name: string): string => {
+  return workoutImages[name] ?? '/images/general/Plank.jpg';
+};
 
 export async function getWorkouts(): Promise<Workout[]> {
-  const response = await fetch(API_URL);
+  const response = await fetch('/api/workouts');
 
   if (!response.ok) {
     throw new Error('Failed to fetch workouts');
@@ -39,24 +28,23 @@ export async function getWorkouts(): Promise<Workout[]> {
 
   const data: Workout[] = await response.json();
 
-  return applyLocalImages(data);
+  return data.map((workout) => ({
+    ...workout,
+    image: getLocalWorkoutImage(workout.name),
+  }));
 }
 
 export async function getWorkoutById(id: string): Promise<Workout> {
-  const response = await fetch(`${API_URL}/${id}`);
+  const response = await fetch(`/api/workouts/${id}`);
 
   if (!response.ok) {
     throw new Error('Failed to fetch workout');
   }
 
-  const data: Workout = await response.json();
-
-  if (!data || 'error' in data) {
-    throw new Error('Workout not found');
-  }
+  const workout: Workout = await response.json();
 
   return {
-    ...data,
-    image: getLocalWorkoutImage(data.name),
+    ...workout,
+    image: getLocalWorkoutImage(workout.name),
   };
 }
