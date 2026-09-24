@@ -28,33 +28,31 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-[#292b2f] bg-[#111214]">
       <div className="container-fitlog">
-        <div className="flex h-16 items-center justify-between">
+        <div className="relative flex h-10 items-center justify-between">
           {/* Logo */}
           <Link
             href="/"
             onClick={closeMobileMenu}
-            className="flex items-center gap-2"
+            className="flex items-center gap-1.5"
           >
-            <span className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl">
-              <Image
-                src="/icons/logo.png"
-                alt="FitLog logo"
-                width={40}
-                height={40}
-                className="h-10 w-10 object-contain"
-                priority
-              />
-            </span>
+            <Image
+              src="/icons/logo.png"
+              alt="FitLog logo"
+              width={16}
+              height={16}
+              className="h-4 w-4 object-contain"
+              priority
+            />
 
-            <span className="text-lg font-bold tracking-tight text-slate-900">
+            <span className="text-[8px] font-bold uppercase tracking-[0.08em] text-white">
               FitLog
             </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden items-center gap-1 md:flex">
+          <nav className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-1 md:flex">
             {navItems.map((item) => {
               const isActive =
                 item.href === '/'
@@ -65,10 +63,10 @@ export default function Navbar() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                  className={`rounded-full px-3 py-1 text-[7px] font-semibold uppercase tracking-[0.04em] ${
                     isActive
-                      ? 'bg-slate-900 text-white'
-                      : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                      ? 'bg-[#ccff00] text-[#111214]'
+                      : 'text-[#777b82] hover:text-white'
                   }`}
                 >
                   {item.label}
@@ -77,44 +75,43 @@ export default function Navbar() {
             })}
           </nav>
 
-          {/* Desktop Counters */}
-          <div className="hidden items-center gap-2 md:flex">
+          {/* Status */}
+          <div className="hidden items-center gap-3 md:flex">
             <Link
               href="/my-plan"
-              className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
+              className="flex items-center gap-1 text-[7px] font-semibold uppercase text-[#777b82]"
             >
-              Plan{' '}
-              <span className="ml-1 rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold">
+              Plan
+              <span className="flex h-3 min-w-3 items-center justify-center rounded-full bg-[#ccff00] px-1 text-[6px] font-bold text-[#111214]">
                 {planCount}
               </span>
             </Link>
 
             <Link
               href="/my-plan"
-              className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
+              className="flex items-center gap-1 rounded-full border border-[#34373b] px-2 py-0.5 text-[7px] font-semibold uppercase text-[#777b82]"
             >
-              Saved{' '}
-              <span className="ml-1 rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold">
+              Saved
+              <span className="flex h-3 min-w-3 items-center justify-center rounded-full border border-[#45494f] px-1 text-[6px] text-[#777b82]">
                 {savedCount}
               </span>
             </Link>
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile */}
           <button
             type="button"
             aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={mobileOpen}
             onClick={() => setMobileOpen((open) => !open)}
-            className="rounded-lg p-2 text-slate-700 transition-colors hover:bg-slate-100 md:hidden"
+            className="rounded p-1 text-[#777b82] md:hidden"
           >
-            {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+            {mobileOpen ? <X size={15} /> : <Menu size={15} />}
           </button>
         </div>
 
-        {/* Mobile Navigation */}
         {mobileOpen && (
-          <div className="border-t border-slate-100 py-3 md:hidden">
+          <div className="border-t border-[#292b2f] py-2 md:hidden">
             <nav className="flex flex-col gap-1">
               {navItems.map((item) => {
                 const isActive =
@@ -127,10 +124,10 @@ export default function Navbar() {
                     key={item.href}
                     href={item.href}
                     onClick={closeMobileMenu}
-                    className={`rounded-lg px-4 py-3 text-sm font-medium ${
+                    className={`rounded-md px-3 py-2 text-[8px] font-semibold uppercase ${
                       isActive
-                        ? 'bg-slate-900 text-white'
-                        : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                        ? 'bg-[#ccff00] text-[#111214]'
+                        : 'text-[#777b82]'
                     }`}
                   >
                     {item.label}
@@ -138,14 +135,14 @@ export default function Navbar() {
                 );
               })}
 
-              <div className="mt-2 grid grid-cols-2 gap-2 border-t border-slate-100 pt-3">
+              <div className="mt-1 flex gap-2 border-t border-[#292b2f] pt-2">
                 <Link
                   href="/my-plan"
                   onClick={closeMobileMenu}
-                  className="rounded-lg border border-slate-200 px-3 py-3 text-center text-sm font-medium text-slate-700"
+                  className="flex flex-1 items-center justify-center gap-1 rounded-md border border-[#34373b] py-2 text-[8px] font-semibold uppercase text-[#8d9298]"
                 >
-                  Plan{' '}
-                  <span className="ml-1 font-bold text-slate-900">
+                  Plan
+                  <span className="rounded-full bg-[#ccff00] px-1 text-[6px] font-bold text-[#111214]">
                     {planCount}
                   </span>
                 </Link>
@@ -153,10 +150,10 @@ export default function Navbar() {
                 <Link
                   href="/my-plan"
                   onClick={closeMobileMenu}
-                  className="rounded-lg border border-slate-200 px-3 py-3 text-center text-sm font-medium text-slate-700"
+                  className="flex flex-1 items-center justify-center gap-1 rounded-md border border-[#34373b] py-2 text-[8px] font-semibold uppercase text-[#8d9298]"
                 >
-                  Saved{' '}
-                  <span className="ml-1 font-bold text-slate-900">
+                  Saved
+                  <span className="rounded-full border border-[#45494f] px-1 text-[6px]">
                     {savedCount}
                   </span>
                 </Link>
