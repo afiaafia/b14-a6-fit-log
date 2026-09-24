@@ -1,15 +1,16 @@
-export interface Workout {
-  id: number;
+export type Workout = {
+  id: string;
   name: string;
   image: string;
+  description: string;
   muscleGroups: string[];
   equipment: string;
-  difficulty: string;
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
   duration: number;
   caloriesBurned: number;
+  rating: number;
   sets: number;
   reps: string;
-  rating: number;
-  description: string;
+  rest: number;
   instructions: string[];
-}
+};
