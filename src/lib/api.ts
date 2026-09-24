@@ -9,15 +9,23 @@ export async function getWorkouts(): Promise<Workout[]> {
     throw new Error('Failed to fetch workouts');
   }
 
-  return response.json();
+  const data: Workout[] = await response.json();
+
+  return data;
 }
 
-export async function getWorkout(id: string): Promise<Workout> {
+export async function getWorkoutById(id: string): Promise<Workout> {
   const response = await fetch(`${API_URL}/${id}`);
 
   if (!response.ok) {
     throw new Error('Failed to fetch workout');
   }
 
-  return response.json();
+  const data: Workout = await response.json();
+
+  if (!data || 'error' in data) {
+    throw new Error('Workout not found');
+  }
+
+  return data;
 }
