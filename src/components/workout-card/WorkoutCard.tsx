@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { Clock3, Flame, Star } from 'lucide-react';
 import type { Workout } from '@/types/workout';
@@ -10,11 +11,13 @@ export default function WorkoutCard({ workout }: WorkoutCardProps) {
   return (
     <Link href={`/workout/${workout.id}`} className="group block">
       <article className="card-fitlog h-full overflow-hidden transition duration-200 hover:-translate-y-1 hover:shadow-lg">
-        <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
-          <img
+        <div className="relative aspect-16/10 overflow-hidden bg-slate-100">
+          <Image
             src={workout.image}
             alt={workout.name}
-            className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover transition duration-300 group-hover:scale-105"
           />
 
           <div className="absolute left-4 top-4 flex flex-wrap gap-2">

@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, Dumbbell } from 'lucide-react';
 
@@ -32,21 +33,23 @@ export default function Hero({ image }: HeroProps) {
         </div>
 
         <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-slate-950">
-          <div className="aspect-[4/3]">
+          <div className="aspect-4/3">
             {image ? (
-              <img
+              <Image
                 src={image}
                 alt="Workout"
-                className="h-full w-full object-cover"
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover"
               />
             ) : (
-              <div className="flex h-full items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-blue-950">
+              <div className="flex h-full items-center justify-center bg-linear-to-br from-slate-900 via-slate-800 to-blue-950">
                 <Dumbbell size={96} strokeWidth={1} className="text-white/30" />
               </div>
             )}
           </div>
 
-          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-6 pt-20">
+          <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/80 to-transparent p-6 pt-20">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/60">
               FitLog
             </p>
