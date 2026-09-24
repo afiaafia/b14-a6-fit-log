@@ -47,45 +47,46 @@ export default function Home() {
   }, [workouts]);
 
   return (
-    <main className="min-h-screen bg-slate-50">
+    <main className="min-h-screen bg-[#101113] text-white">
       <Hero image="/images/hero/banner.png" />
 
-      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="mb-8">
-          <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-blue-600">
-            Explore workouts
-          </p>
-
-          <h2 className="text-3xl font-bold tracking-tight text-slate-900">
-            Find Your Next Workout
+      <section
+        id="library"
+        className="mx-auto max-w-[1200px] px-4 py-10 sm:px-6 lg:px-8"
+      >
+        <div className="mb-6 border-b border-[#34373b] pb-4">
+          <h2 className="text-2xl font-black uppercase tracking-tight text-white sm:text-3xl">
+            The Library
           </h2>
 
-          <p className="mt-2 max-w-2xl text-slate-600">
-            Browse exercises and choose a workout that matches your goals,
-            experience, and available equipment.
+          <p className="mt-1 text-sm text-[#8d9298]">
+            Twelve lifts covering every major muscle group.
           </p>
         </div>
 
         {loading && (
-          <div className="flex min-h-80 items-center justify-center rounded-2xl bg-white">
-            <p className="text-slate-500">Loading workouts...</p>
+          <div className="flex min-h-80 items-center justify-center border border-[#34373b] bg-[#17191c]">
+            <div className="flex flex-col items-center gap-4">
+              <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#ccff00] border-t-transparent" />
+              <p className="text-sm text-[#8d9298]">Loading workouts...</p>
+            </div>
           </div>
         )}
 
         {!loading && error && (
-          <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-center">
-            <p className="font-medium text-red-700">{error}</p>
+          <div className="border border-red-500/30 bg-red-500/10 p-6 text-center">
+            <p className="font-medium text-red-400">{error}</p>
           </div>
         )}
 
         {!loading && !error && sortedWorkouts.length === 0 && (
-          <div className="rounded-2xl bg-white p-10 text-center">
-            <p className="text-slate-500">No workouts found.</p>
+          <div className="border border-[#34373b] bg-[#17191c] p-10 text-center">
+            <p className="text-[#8d9298]">No workouts found.</p>
           </div>
         )}
 
         {!loading && !error && sortedWorkouts.length > 0 && (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-px overflow-hidden border border-[#34373b] bg-[#34373b] sm:grid-cols-2 lg:grid-cols-3">
             {sortedWorkouts.map((workout) => (
               <WorkoutCard key={workout.id} workout={workout} />
             ))}
