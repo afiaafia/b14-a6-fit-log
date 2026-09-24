@@ -17,10 +17,16 @@ const localWorkoutImages: Record<string, string> = {
   'Russian Twists': '/images/Russian Twists.avif',
 };
 
+const fallbackImage = '/images/banner.png';
+
+function getLocalWorkoutImage(name: string): string {
+  return localWorkoutImages[name] ?? fallbackImage;
+}
+
 function applyLocalImages(workouts: Workout[]): Workout[] {
   return workouts.map((workout) => ({
     ...workout,
-    image: localWorkoutImages[workout.name] ?? workout.image,
+    image: getLocalWorkoutImage(workout.name),
   }));
 }
 
@@ -51,6 +57,6 @@ export async function getWorkoutById(id: string): Promise<Workout> {
 
   return {
     ...data,
-    image: localWorkoutImages[data.name] ?? data.image,
+    image: getLocalWorkoutImage(data.name),
   };
 }
