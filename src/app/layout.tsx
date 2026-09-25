@@ -4,7 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import './globals.css';
 
-import Navbar from '@/components/navbar/Navbar';
+import NavbarWrapper from '@/components/navbar/NavbarWrapper';
 import Footer from '@/components/footer/Footer';
 import { FitLogProvider } from '@/context/FitLogContext';
 
@@ -23,7 +23,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <FitLogProvider>
-          <Navbar />
+          <NavbarWrapper />
 
           {children}
 

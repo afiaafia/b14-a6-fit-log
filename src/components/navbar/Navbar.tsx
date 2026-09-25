@@ -8,17 +8,6 @@ import { useState } from 'react';
 
 import { useFitLog } from '@/context/FitLogContext';
 
-const navItems = [
-  {
-    label: 'Workout',
-    href: '/',
-  },
-  {
-    label: 'My Plan',
-    href: '/my-plan',
-  },
-];
-
 export default function Navbar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
