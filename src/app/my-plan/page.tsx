@@ -2,7 +2,13 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { Check, Clock3, Flame, Star, X } from 'lucide-react';
+import {
+  Check,
+  Clock3,
+  Flame,
+  Star,
+  X,
+} from 'lucide-react';
 import { useMemo, useState } from 'react';
 
 import { useFitLog } from '@/context/FitLogContext';
@@ -11,13 +17,24 @@ type ViewMode = 'plan' | 'saved';
 type SortOption = 'duration' | 'calories' | 'rating';
 
 export default function MyPlanPage() {
-  const { plan, saved, removeFromPlan, removeFromSaved } = useFitLog();
+  const {
+    plan,
+    saved,
+    removeFromPlan,
+    removeFromSaved,
+    isCompleted,
+    markAsDone,
+    markAsUndone,
+  } = useFitLog();
 
-  const [activeTab, setActiveTab] = useState<ViewMode>('plan');
-  const [sortBy, setSortBy] = useState<SortOption>('duration');
-  const [doneIds, setDoneIds] = useState<string[]>([]);
+  const [activeTab, setActiveTab] =
+    useState<ViewMode>('plan');
 
-  const activeWorkouts = activeTab === 'plan' ? plan : saved;
+  const [sortBy, setSortBy] =
+    useState<SortOption>('duration');
+
+  const activeWorkouts =
+    activeTab === 'plan' ? plan : saved;
 
   const sortedWorkouts = useMemo(() => {
     return [...activeWorkouts].sort((a, b) => {
@@ -33,36 +50,16 @@ export default function MyPlanPage() {
     });
   }, [activeWorkouts, sortBy]);
 
-  const planMinutes = plan.reduce(
+  const currentMinutes = activeWorkouts.reduce(
     (total, workout) => total + workout.duration,
     0
   );
 
-  const planCalories = plan.reduce(
-    (total, workout) => total + workout.caloriesBurned,
+  const currentCalories = activeWorkouts.reduce(
+    (total, workout) =>
+      total + workout.caloriesBurned,
     0
   );
-
-  const savedMinutes = saved.reduce(
-    (total, workout) => total + workout.duration,
-    0
-  );
-
-  const savedCalories = saved.reduce(
-    (total, workout) => total + workout.caloriesBurned,
-    0
-  );
-
-  const currentMinutes = activeTab === 'plan' ? planMinutes : savedMinutes;
-  const currentCalories = activeTab === 'plan' ? planCalories : savedCalories;
-
-  const toggleDone = (id: string) => {
-    setDoneIds((current) =>
-      current.includes(id)
-        ? current.filter((item) => item !== id)
-        : [...current, id]
-    );
-  };
 
   const handleRemove = (id: string) => {
     if (activeTab === 'plan') {
@@ -70,8 +67,14 @@ export default function MyPlanPage() {
     } else {
       removeFromSaved(id);
     }
+  };
 
-    setDoneIds((current) => current.filter((item) => item !== id));
+  const handleDoneToggle = (id: string) => {
+    if (isCompleted(id)) {
+      markAsUndone(id);
+    } else {
+      markAsDone(id);
+    }
   };
 
   return (
@@ -88,7 +91,8 @@ export default function MyPlanPage() {
           </h1>
 
           <p className="mt-3 text-sm text-[#858B95]">
-            Cap of five lifts for today. Finish them, then load more.
+            Cap of five lifts for today. Finish them,
+            then load more.
           </p>
         </section>
 
@@ -164,13 +168,23 @@ export default function MyPlanPage() {
               <select
                 value={sortBy}
                 onChange={(event) =>
-                  setSortBy(event.target.value as SortOption)
+                  setSortBy(
+                    event.target.value as SortOption
+                  )
                 }
                 className="appearance-none rounded-full border border-[#343941] bg-[#121316] py-2 pl-4 pr-9 text-xs font-semibold text-white outline-none transition focus:border-[#CCFF00]"
               >
-                <option value="duration">Duration</option>
-                <option value="calories">Calories</option>
-                <option value="rating">Rating</option>
+                <option value="duration">
+                  Duration
+                </option>
+
+                <option value="calories">
+                  Calories
+                </option>
+
+                <option value="rating">
+                  Rating
+                </option>
               </select>
 
               <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#8A909A]">
@@ -186,7 +200,7 @@ export default function MyPlanPage() {
             <div className="rounded-xl border border-dashed border-[#343941] bg-[#121316] px-6 py-16 text-center">
               <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#777E89]">
                 {activeTab === 'plan'
-                  ? 'No workouts in today&apos;s plan'
+                  ? "No workouts in today's plan"
                   : 'No saved workouts'}
               </p>
 
@@ -206,7 +220,7 @@ export default function MyPlanPage() {
           ) : (
             <div className="space-y-4">
               {sortedWorkouts.map((workout) => {
-                const isDone = doneIds.includes(workout.id);
+                const isDone = isCompleted(workout.id);
 
                 return (
                   <article
@@ -227,14 +241,22 @@ export default function MyPlanPage() {
                           sizes="(max-width: 640px) 100vw, 220px"
                           className="object-cover"
                         />
+                      />
                       </div>
 
                       {/* Workout Info */}
                       <div className="min-w-0 flex-1 px-1 py-1">
                         <div className="mb-2 flex items-center gap-2">
-                          <span className="rounded-full bg-[#CCFF00] px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-black">
-                            {workout.muscleGroup}
-                          </span>
+                          {workout.muscleGroups
+                            .slice(0, 2)
+                            .map((muscleGroup) => (
+                              <span
+                                key={muscleGroup}
+                                className="rounded-full bg-[#CCFF00] px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-black"
+                              >
+                                {muscleGroup}
+                              </span>
+                            ))}
 
                           {isDone && (
                             <span className="text-[9px] font-bold uppercase tracking-wide text-[#CCFF00]">
@@ -288,7 +310,9 @@ export default function MyPlanPage() {
                         {activeTab === 'plan' && (
                           <button
                             type="button"
-                            onClick={() => toggleDone(workout.id)}
+                            onClick={() =>
+                              handleDoneToggle(workout.id)
+                            }
                             className={`inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2 text-[10px] font-extrabold uppercase tracking-[0.08em] transition ${
                               isDone
                                 ? 'bg-[#262A30] text-[#CCFF00]'
@@ -296,14 +320,19 @@ export default function MyPlanPage() {
                             }`}
                           >
                             <Check className="h-3.5 w-3.5" />
-                            {isDone ? 'Done' : 'Mark as Done'}
+
+                            {isDone
+                              ? 'Done'
+                              : 'Mark as Done'}
                           </button>
                         )}
 
                         <button
                           type="button"
                           aria-label={`Remove ${workout.name}`}
-                          onClick={() => handleRemove(workout.id)}
+                          onClick={() =>
+                            handleRemove(workout.id)
+                          }
                           className="flex h-8 w-8 items-center justify-center rounded-full text-[#6F7680] transition hover:bg-[#1F2024] hover:text-white"
                         >
                           <X className="h-4 w-4" />

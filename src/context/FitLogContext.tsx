@@ -4,9 +4,8 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
-  useState,
+  useSyncExternalStore,
   type ReactNode,
 } from 'react';
 
@@ -41,18 +40,53 @@ const PLAN_STORAGE_KEY = 'fitlog-plan';
 const SAVED_STORAGE_KEY = 'fitlog-saved';
 const COMPLETED_STORAGE_KEY = 'fitlog-completed';
 
-function readStoredWorkouts(key: string): Workout[] {
+const STORAGE_EVENT = 'fitlog-storage-change';
+
+const EMPTY_STORAGE_VALUE = '[]';
+
+function getStorageValue(key: string): string {
   if (typeof window === 'undefined') {
-    return [];
+    return EMPTY_STORAGE_VALUE;
   }
 
-  try {
-    const raw = localStorage.getItem(key);
+  return localStorage.getItem(key) ?? EMPTY_STORAGE_VALUE;
+}
 
-    if (!raw) {
-      return [];
+function subscribeToStorage(callback: () => void) {
+  if (typeof window === 'undefined') {
+    return () => {};
+  }
+
+  const handleStorageChange = (event: StorageEvent) => {
+    if (event.key === null || event.key === 'fitlog-clear-all') {
+      callback();
+      return;
     }
 
+    if (
+      event.key === PLAN_STORAGE_KEY ||
+      event.key === SAVED_STORAGE_KEY ||
+      event.key === COMPLETED_STORAGE_KEY
+    ) {
+      callback();
+    }
+  };
+
+  const handleCustomChange = () => {
+    callback();
+  };
+
+  window.addEventListener('storage', handleStorageChange);
+  window.addEventListener(STORAGE_EVENT, handleCustomChange);
+
+  return () => {
+    window.removeEventListener('storage', handleStorageChange);
+    window.removeEventListener(STORAGE_EVENT, handleCustomChange);
+  };
+}
+
+function parseWorkouts(raw: string): Workout[] {
+  try {
     const parsed: unknown = JSON.parse(raw);
 
     if (!Array.isArray(parsed)) {
@@ -68,18 +102,8 @@ function readStoredWorkouts(key: string): Workout[] {
   }
 }
 
-function readCompletedIds(): string[] {
-  if (typeof window === 'undefined') {
-    return [];
-  }
-
+function parseCompletedIds(raw: string): string[] {
   try {
-    const raw = localStorage.getItem(COMPLETED_STORAGE_KEY);
-
-    if (!raw) {
-      return [];
-    }
-
     const parsed: unknown = JSON.parse(raw);
 
     if (!Array.isArray(parsed)) {
@@ -92,97 +116,142 @@ function readCompletedIds(): string[] {
   }
 }
 
-export function FitLogProvider({ children }: { children: ReactNode }) {
-  const [plan, setPlan] = useState<Workout[]>([]);
-  const [saved, setSaved] = useState<Workout[]>([]);
-  const [completedPlanIds, setCompletedPlanIds] = useState<string[]>([]);
-  const [hydrated, setHydrated] = useState(false);
+function useStoredValue(key: string) {
+  const getSnapshot = useCallback(() => {
+    return getStorageValue(key);
+  }, [key]);
 
-  useEffect(() => {
-    setPlan(readStoredWorkouts(PLAN_STORAGE_KEY));
-    setSaved(readStoredWorkouts(SAVED_STORAGE_KEY));
-    setCompletedPlanIds(readCompletedIds());
-    setHydrated(true);
+  const getServerSnapshot = useCallback(() => {
+    return EMPTY_STORAGE_VALUE;
   }, []);
 
+  return useSyncExternalStore(
+    subscribeToStorage,
+    getSnapshot,
+    getServerSnapshot
+  );
+}
+
+function writeStorage(key: string, value: unknown) {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  localStorage.setItem(key, JSON.stringify(value));
+
+  window.dispatchEvent(new Event(STORAGE_EVENT));
+}
+
+export function FitLogProvider({ children }: { children: ReactNode }) {
+  const planRaw = useStoredValue(PLAN_STORAGE_KEY);
+  const savedRaw = useStoredValue(SAVED_STORAGE_KEY);
+  const completedRaw = useStoredValue(COMPLETED_STORAGE_KEY);
+
+  const plan = useMemo(() => parseWorkouts(planRaw), [planRaw]);
+
+  const saved = useMemo(() => parseWorkouts(savedRaw), [savedRaw]);
+
+  const completedPlanIds = useMemo(
+    () => parseCompletedIds(completedRaw),
+    [completedRaw]
+  );
+
   const addToPlan = useCallback((workout: Workout) => {
-    setPlan((current) => {
-      const workoutId = String(workout.id);
+    const current = parseWorkouts(getStorageValue(PLAN_STORAGE_KEY));
+    const workoutId = String(workout.id);
 
-      if (current.some((item) => String(item.id) === workoutId)) {
-        return current;
-      }
+    if (current.some((item) => String(item.id) === workoutId)) {
+      return;
+    }
 
-      if (current.length >= 5) {
-        return current;
-      }
+    if (current.length >= 5) {
+      return;
+    }
 
-      return [
-        ...current,
-        {
-          ...workout,
-          id: workoutId,
-        },
-      ];
-    });
+    const updated = [
+      ...current,
+      {
+        ...workout,
+        id: workoutId,
+      },
+    ];
 
-    setCompletedPlanIds((current) =>
-      current.filter((id) => id !== String(workout.id))
-    );
+    writeStorage(PLAN_STORAGE_KEY, updated);
+
+    const completed = parseCompletedIds(getStorageValue(COMPLETED_STORAGE_KEY));
+
+    const updatedCompleted = completed.filter((id) => id !== workoutId);
+
+    writeStorage(COMPLETED_STORAGE_KEY, updatedCompleted);
   }, []);
 
   const removeFromPlan = useCallback((workoutId: string) => {
     const id = String(workoutId);
 
-    setPlan((current) => current.filter((item) => String(item.id) !== id));
+    const current = parseWorkouts(getStorageValue(PLAN_STORAGE_KEY));
 
-    setCompletedPlanIds((current) =>
-      current.filter((completedId) => completedId !== id)
+    const updated = current.filter((item) => String(item.id) !== id);
+
+    writeStorage(PLAN_STORAGE_KEY, updated);
+
+    const completed = parseCompletedIds(getStorageValue(COMPLETED_STORAGE_KEY));
+
+    const updatedCompleted = completed.filter(
+      (completedId) => completedId !== id
     );
+
+    writeStorage(COMPLETED_STORAGE_KEY, updatedCompleted);
   }, []);
 
   const saveForLater = useCallback((workout: Workout) => {
-    setSaved((current) => {
-      const workoutId = String(workout.id);
+    const current = parseWorkouts(getStorageValue(SAVED_STORAGE_KEY));
+    const workoutId = String(workout.id);
 
-      if (current.some((item) => String(item.id) === workoutId)) {
-        return current;
-      }
+    if (current.some((item) => String(item.id) === workoutId)) {
+      return;
+    }
 
-      return [
-        ...current,
-        {
-          ...workout,
-          id: workoutId,
-        },
-      ];
-    });
+    const updated = [
+      ...current,
+      {
+        ...workout,
+        id: workoutId,
+      },
+    ];
+
+    writeStorage(SAVED_STORAGE_KEY, updated);
   }, []);
 
   const removeFromSaved = useCallback((workoutId: string) => {
-    setSaved((current) =>
-      current.filter((item) => String(item.id) !== String(workoutId))
-    );
+    const id = String(workoutId);
+
+    const current = parseWorkouts(getStorageValue(SAVED_STORAGE_KEY));
+
+    const updated = current.filter((item) => String(item.id) !== id);
+
+    writeStorage(SAVED_STORAGE_KEY, updated);
   }, []);
 
   const markAsDone = useCallback((workoutId: string) => {
     const id = String(workoutId);
 
-    setCompletedPlanIds((current) => {
-      if (current.includes(id)) {
-        return current;
-      }
+    const current = parseCompletedIds(getStorageValue(COMPLETED_STORAGE_KEY));
 
-      return [...current, id];
-    });
+    if (current.includes(id)) {
+      return;
+    }
+
+    writeStorage(COMPLETED_STORAGE_KEY, [...current, id]);
   }, []);
 
   const markAsUndone = useCallback((workoutId: string) => {
     const id = String(workoutId);
 
-    setCompletedPlanIds((current) =>
-      current.filter((completedId) => completedId !== id)
-    );
+    const current = parseCompletedIds(getStorageValue(COMPLETED_STORAGE_KEY));
+
+    const updated = current.filter((completedId) => completedId !== id);
+
+    writeStorage(COMPLETED_STORAGE_KEY, updated);
   }, []);
 
   const isInPlan = useCallback(
@@ -201,33 +270,6 @@ export function FitLogProvider({ children }: { children: ReactNode }) {
     (workoutId: string) => completedPlanIds.includes(String(workoutId)),
     [completedPlanIds]
   );
-
-  useEffect(() => {
-    if (!hydrated) {
-      return;
-    }
-
-    localStorage.setItem(PLAN_STORAGE_KEY, JSON.stringify(plan));
-  }, [plan, hydrated]);
-
-  useEffect(() => {
-    if (!hydrated) {
-      return;
-    }
-
-    localStorage.setItem(SAVED_STORAGE_KEY, JSON.stringify(saved));
-  }, [saved, hydrated]);
-
-  useEffect(() => {
-    if (!hydrated) {
-      return;
-    }
-
-    localStorage.setItem(
-      COMPLETED_STORAGE_KEY,
-      JSON.stringify(completedPlanIds)
-    );
-  }, [completedPlanIds, hydrated]);
 
   const value = useMemo<FitLogContextType>(
     () => ({
