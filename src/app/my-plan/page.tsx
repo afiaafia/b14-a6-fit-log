@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Check, Clock3, Flame, Star, X } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { toast } from 'react-toastify';
 
 import { useFitLog } from '@/context/FitLogContext';
 
@@ -22,7 +23,6 @@ export default function MyPlanPage() {
   } = useFitLog();
 
   const [activeTab, setActiveTab] = useState<ViewMode>('plan');
-
   const [sortBy, setSortBy] = useState<SortOption>('duration');
 
   const activeWorkouts = activeTab === 'plan' ? plan : saved;
@@ -51,19 +51,23 @@ export default function MyPlanPage() {
     0
   );
 
-  const handleRemove = (id: string) => {
+  const handleRemove = (id: string, workoutName: string) => {
     if (activeTab === 'plan') {
       removeFromPlan(id);
+      toast.success(`${workoutName} removed from your plan.`);
     } else {
       removeFromSaved(id);
+      toast.success(`${workoutName} removed from saved.`);
     }
   };
 
-  const handleDoneToggle = (id: string) => {
+  const handleDoneToggle = (id: string, workoutName: string) => {
     if (isCompleted(id)) {
       markAsUndone(id);
+      toast.info(`${workoutName} marked as not done.`);
     } else {
       markAsDone(id);
+      toast.success(`${workoutName} marked as done.`);
     }
   };
 
@@ -162,9 +166,7 @@ export default function MyPlanPage() {
                 className="appearance-none rounded-full border border-[#343941] bg-[#121316] py-2 pl-4 pr-9 text-xs font-semibold text-white outline-none transition focus:border-[#CCFF00]"
               >
                 <option value="duration">Duration</option>
-
                 <option value="calories">Calories</option>
-
                 <option value="rating">Rating</option>
               </select>
 
@@ -290,7 +292,9 @@ export default function MyPlanPage() {
                         {activeTab === 'plan' && (
                           <button
                             type="button"
-                            onClick={() => handleDoneToggle(workout.id)}
+                            onClick={() =>
+                              handleDoneToggle(workout.id, workout.name)
+                            }
                             className={`inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2 text-[10px] font-extrabold uppercase tracking-[0.08em] transition ${
                               isDone
                                 ? 'bg-[#262A30] text-[#CCFF00]'
@@ -298,7 +302,6 @@ export default function MyPlanPage() {
                             }`}
                           >
                             <Check className="h-3.5 w-3.5" />
-
                             {isDone ? 'Done' : 'Mark as Done'}
                           </button>
                         )}
@@ -306,7 +309,7 @@ export default function MyPlanPage() {
                         <button
                           type="button"
                           aria-label={`Remove ${workout.name}`}
-                          onClick={() => handleRemove(workout.id)}
+                          onClick={() => handleRemove(workout.id, workout.name)}
                           className="flex h-8 w-8 items-center justify-center rounded-full text-[#6F7680] transition hover:bg-[#1F2024] hover:text-white"
                         >
                           <X className="h-4 w-4" />
