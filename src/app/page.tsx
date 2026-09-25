@@ -1,15 +1,21 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+
 import Hero from '@/components/hero/Hero';
 import WorkoutCard from '@/components/workout-card/WorkoutCard';
+import SortDropdown from '@/components/sort-dropdown/SortDropdown';
+
 import { getWorkouts } from '@/lib/api';
 import type { Workout } from '@/types/workout';
+
+type SortOption = 'Duration' | 'Calories' | 'Rating';
 
 export default function Home() {
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [sortOption, setSortOption] = useState<SortOption>('Duration');
 
   useEffect(() => {
     let cancelled = false;
@@ -42,20 +48,40 @@ export default function Home() {
     };
   }, []);
 
+  const sortedWorkouts = useMemo(() => {
+    return [...workouts].sort((a, b) => {
+      if (sortOption === 'Duration') {
+        return a.duration - b.duration;
+      }
+
+      if (sortOption === 'Calories') {
+        return a.caloriesBurned - b.caloriesBurned;
+      }
+
+      return a.rating - b.rating;
+    });
+  }, [workouts, sortOption]);
+
   return (
     <main className="min-h-screen bg-[#08090B] text-white">
       <Hero />
 
       <section id="library" className="mx-auto w-full max-w-300 px-6 py-12">
         {/* Library Header */}
-        <div className="mb-6">
-          <h2 className="text-2xl font-black uppercase tracking-tight text-white">
-            THE LIBRARY
-          </h2>
+        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h2 className="text-2xl font-black uppercase tracking-tight text-white">
+              THE LIBRARY
+            </h2>
 
-          <p className="mt-1 text-sm text-[#9CA3AF]">
-            Twelve lifts covering every major muscle group.
-          </p>
+            <p className="mt-1 text-sm text-[#9CA3AF]">
+              Twelve lifts covering every major muscle group.
+            </p>
+          </div>
+
+          {!loading && !error && workouts.length > 0 && (
+            <SortDropdown value={sortOption} onChange={setSortOption} />
+          )}
         </div>
 
         {/* Loading State */}
@@ -84,9 +110,9 @@ export default function Home() {
         )}
 
         {/* Workout Grid */}
-        {!loading && !error && workouts.length > 0 && (
+        {!loading && !error && sortedWorkouts.length > 0 && (
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {workouts.map((workout) => (
+            {sortedWorkouts.map((workout) => (
               <WorkoutCard key={workout.id} workout={workout} />
             ))}
           </div>
