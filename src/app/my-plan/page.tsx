@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Check, Clock3, Flame, Star, X } from 'lucide-react';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -14,6 +14,7 @@ type SortOption = 'duration' | 'calories' | 'rating';
 
 export default function MyPlanPage() {
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   const {
     plan,
@@ -25,9 +26,8 @@ export default function MyPlanPage() {
     markAsUndone,
   } = useFitLog();
 
-  const [activeTab, setActiveTab] = useState<ViewMode>(() =>
-    searchParams.get('tab') === 'saved' ? 'saved' : 'plan'
-  );
+  const activeTab: ViewMode =
+    searchParams.get('tab') === 'saved' ? 'saved' : 'plan';
 
   const [sortBy, setSortBy] = useState<SortOption>('duration');
 
@@ -56,6 +56,14 @@ export default function MyPlanPage() {
     (total, workout) => total + workout.caloriesBurned,
     0
   );
+
+  const handleTabChange = (tab: ViewMode) => {
+    if (tab === 'saved') {
+      router.push('/my-plan?tab=saved');
+    } else {
+      router.push('/my-plan');
+    }
+  };
 
   const handleRemove = (id: string, workoutName: string) => {
     if (activeTab === 'plan') {
@@ -135,7 +143,7 @@ export default function MyPlanPage() {
           <div className="inline-flex w-fit rounded-full border border-[#292D34] bg-[#121316] p-1">
             <button
               type="button"
-              onClick={() => setActiveTab('plan')}
+              onClick={() => handleTabChange('plan')}
               className={`rounded-full px-4 py-2 text-[10px] font-bold uppercase tracking-[0.12em] transition ${
                 activeTab === 'plan'
                   ? 'bg-[#1F2024] text-white'
@@ -147,7 +155,7 @@ export default function MyPlanPage() {
 
             <button
               type="button"
-              onClick={() => setActiveTab('saved')}
+              onClick={() => handleTabChange('saved')}
               className={`rounded-full px-4 py-2 text-[10px] font-bold uppercase tracking-[0.12em] transition ${
                 activeTab === 'saved'
                   ? 'bg-[#1F2024] text-white'
