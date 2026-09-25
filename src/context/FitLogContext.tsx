@@ -44,6 +44,18 @@ const STORAGE_EVENT = 'fitlog-storage-change';
 
 const EMPTY_STORAGE_VALUE = '[]';
 
+/*
+ * Cached client snapshots.
+ *
+ * They intentionally start with the same value as the server snapshot.
+ * After hydration, the external store refreshes them from localStorage.
+ */
+const clientSnapshots: Record<string, string> = {
+  [PLAN_STORAGE_KEY]: EMPTY_STORAGE_VALUE,
+  [SAVED_STORAGE_KEY]: EMPTY_STORAGE_VALUE,
+  [COMPLETED_STORAGE_KEY]: EMPTY_STORAGE_VALUE,
+};
+
 function getStorageValue(key: string): string {
   if (typeof window === 'undefined') {
     return EMPTY_STORAGE_VALUE;
@@ -52,32 +64,53 @@ function getStorageValue(key: string): string {
   return localStorage.getItem(key) ?? EMPTY_STORAGE_VALUE;
 }
 
-function subscribeToStorage(callback: () => void) {
+function refreshClientSnapshot(key: string) {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  clientSnapshots[key] = getStorageValue(key);
+}
+
+function subscribeToStorage(key: string, callback: () => void) {
   if (typeof window === 'undefined') {
     return () => {};
   }
 
-  const handleStorageChange = (event: StorageEvent) => {
-    if (event.key === null || event.key === 'fitlog-clear-all') {
-      callback();
-      return;
-    }
+  const relevantKeys = new Set([
+    PLAN_STORAGE_KEY,
+    SAVED_STORAGE_KEY,
+    COMPLETED_STORAGE_KEY,
+  ]);
 
-    if (
-      event.key === PLAN_STORAGE_KEY ||
-      event.key === SAVED_STORAGE_KEY ||
-      event.key === COMPLETED_STORAGE_KEY
-    ) {
+  const handleStorageChange = (event: StorageEvent) => {
+    if (event.key === null || relevantKeys.has(event.key)) {
+      if (event.key === null) {
+        refreshClientSnapshot(PLAN_STORAGE_KEY);
+        refreshClientSnapshot(SAVED_STORAGE_KEY);
+        refreshClientSnapshot(COMPLETED_STORAGE_KEY);
+      } else {
+        refreshClientSnapshot(event.key);
+      }
+
       callback();
     }
   };
 
   const handleCustomChange = () => {
+    refreshClientSnapshot(key);
     callback();
   };
 
   window.addEventListener('storage', handleStorageChange);
   window.addEventListener(STORAGE_EVENT, handleCustomChange);
+
+  /*
+   * The first client render must match the server.
+   * After the subscription is established, read the real localStorage value.
+   */
+  refreshClientSnapshot(key);
+  callback();
 
   return () => {
     window.removeEventListener('storage', handleStorageChange);
@@ -118,18 +151,19 @@ function parseCompletedIds(raw: string): string[] {
 
 function useStoredValue(key: string) {
   const getSnapshot = useCallback(() => {
-    return getStorageValue(key);
+    return clientSnapshots[key] ?? EMPTY_STORAGE_VALUE;
   }, [key]);
+
+  const subscribe = useCallback(
+    (callback: () => void) => subscribeToStorage(key, callback),
+    [key]
+  );
 
   const getServerSnapshot = useCallback(() => {
     return EMPTY_STORAGE_VALUE;
   }, []);
 
-  return useSyncExternalStore(
-    subscribeToStorage,
-    getSnapshot,
-    getServerSnapshot
-  );
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
 
 function writeStorage(key: string, value: unknown) {
@@ -137,7 +171,11 @@ function writeStorage(key: string, value: unknown) {
     return;
   }
 
-  localStorage.setItem(key, JSON.stringify(value));
+  const nextValue = JSON.stringify(value);
+
+  localStorage.setItem(key, nextValue);
+
+  clientSnapshots[key] = nextValue;
 
   window.dispatchEvent(new Event(STORAGE_EVENT));
 }

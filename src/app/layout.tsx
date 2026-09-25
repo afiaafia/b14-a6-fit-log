@@ -4,8 +4,8 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import './globals.css';
 
-import NavbarWrapper from '@/components/navbar/NavbarWrapper';
 import Footer from '@/components/footer/Footer';
+import NavbarWrapper from '@/components/navbar/NavbarWrapper';
 import { FitLogProvider } from '@/context/FitLogContext';
 
 export const metadata: Metadata = {
@@ -20,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" data-scroll-behavior="smooth">
       <body>
         <FitLogProvider>
           <NavbarWrapper />
