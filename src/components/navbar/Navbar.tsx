@@ -16,7 +16,7 @@ export default function Navbar() {
 
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const isWorkoutActive = pathname === '/';
+  const isWorkoutActive = pathname === '/' || pathname.startsWith('/workout/');
 
   const isSavedActive =
     pathname === '/my-plan' && searchParams.get('tab') === 'saved';
@@ -26,6 +26,18 @@ export default function Navbar() {
   const closeMobileMenu = () => {
     setMobileOpen(false);
   };
+
+  const mainNavActiveClass =
+    'rounded-full bg-[#1A2112] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-[#CCFF00] shadow-[0_0_0_1px_rgba(204,255,0,0.03),0_2px_8px_rgba(0,0,0,0.35)]';
+
+  const mainNavInactiveClass =
+    'rounded-full px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A3AAB7] transition-colors hover:text-white';
+
+  const mobileNavActiveClass =
+    'rounded-full bg-[#1A2112] px-3 py-2 text-xs font-bold uppercase tracking-wider text-[#CCFF00]';
+
+  const mobileNavInactiveClass =
+    'rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-wider text-[#A3AAB7] transition-colors hover:text-white';
 
   return (
     <header className="border-b border-[#1F242D] bg-[#0D0F12]">
@@ -55,10 +67,9 @@ export default function Navbar() {
           <nav className="hidden items-center gap-1 md:flex">
             <Link
               href="/"
+              aria-current={isWorkoutActive ? 'page' : undefined}
               className={
-                isWorkoutActive
-                  ? 'rounded-full bg-[#1A2112] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-[#CCFF00] shadow-[0_0_0_1px_rgba(204,255,0,0.03),0_2px_8px_rgba(0,0,0,0.35)]'
-                  : 'rounded-full px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A3AAB7] transition-colors hover:text-white'
+                isWorkoutActive ? mainNavActiveClass : mainNavInactiveClass
               }
             >
               Workout
@@ -66,10 +77,9 @@ export default function Navbar() {
 
             <Link
               href="/my-plan"
+              aria-current={isPlanActive ? 'page' : undefined}
               className={
-                isPlanActive
-                  ? 'rounded-full bg-[#1A2112] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-[#CCFF00] shadow-[0_0_0_1px_rgba(204,255,0,0.03),0_2px_8px_rgba(0,0,0,0.35)]'
-                  : 'rounded-full px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A3AAB7] transition-colors hover:text-white'
+                isPlanActive ? mainNavActiveClass : mainNavInactiveClass
               }
             >
               My Plan
@@ -80,6 +90,7 @@ export default function Navbar() {
           <div className="hidden items-center gap-3 md:flex">
             <Link
               href="/my-plan"
+              aria-current={isPlanActive ? 'page' : undefined}
               className={
                 isPlanActive
                   ? 'flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-[#CCFF00]'
@@ -95,6 +106,7 @@ export default function Navbar() {
 
             <Link
               href="/my-plan?tab=saved"
+              aria-current={isSavedActive ? 'page' : undefined}
               className={
                 isSavedActive
                   ? 'flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-[#CCFF00]'
@@ -134,10 +146,11 @@ export default function Navbar() {
               <Link
                 href="/"
                 onClick={closeMobileMenu}
+                aria-current={isWorkoutActive ? 'page' : undefined}
                 className={
                   isWorkoutActive
-                    ? 'rounded-full bg-[#1A2112] px-3 py-2 text-xs font-bold uppercase tracking-wider text-[#CCFF00]'
-                    : 'rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-wider text-[#A3AAB7] transition-colors hover:text-white'
+                    ? mobileNavActiveClass
+                    : mobileNavInactiveClass
                 }
               >
                 Workout
@@ -146,10 +159,9 @@ export default function Navbar() {
               <Link
                 href="/my-plan"
                 onClick={closeMobileMenu}
+                aria-current={isPlanActive ? 'page' : undefined}
                 className={
-                  isPlanActive
-                    ? 'rounded-full bg-[#1A2112] px-3 py-2 text-xs font-bold uppercase tracking-wider text-[#CCFF00]'
-                    : 'rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-wider text-[#A3AAB7] transition-colors hover:text-white'
+                  isPlanActive ? mobileNavActiveClass : mobileNavInactiveClass
                 }
               >
                 My Plan
@@ -159,6 +171,7 @@ export default function Navbar() {
                 <Link
                   href="/my-plan"
                   onClick={closeMobileMenu}
+                  aria-current={isPlanActive ? 'page' : undefined}
                   className={
                     isPlanActive
                       ? 'flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#CCFF00]'
@@ -175,6 +188,7 @@ export default function Navbar() {
                 <Link
                   href="/my-plan?tab=saved"
                   onClick={closeMobileMenu}
+                  aria-current={isSavedActive ? 'page' : undefined}
                   className={
                     isSavedActive
                       ? 'flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#CCFF00]'
