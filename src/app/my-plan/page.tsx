@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Check, Clock3, Flame, Star, X } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -12,6 +13,8 @@ type ViewMode = 'plan' | 'saved';
 type SortOption = 'duration' | 'calories' | 'rating';
 
 export default function MyPlanPage() {
+  const searchParams = useSearchParams();
+
   const {
     plan,
     saved,
@@ -22,7 +25,10 @@ export default function MyPlanPage() {
     markAsUndone,
   } = useFitLog();
 
-  const [activeTab, setActiveTab] = useState<ViewMode>('plan');
+  const [activeTab, setActiveTab] = useState<ViewMode>(() =>
+    searchParams.get('tab') === 'saved' ? 'saved' : 'plan'
+  );
+
   const [sortBy, setSortBy] = useState<SortOption>('duration');
 
   const activeWorkouts = activeTab === 'plan' ? plan : saved;
@@ -73,7 +79,7 @@ export default function MyPlanPage() {
 
   return (
     <main className="min-h-screen bg-[#0B0C0E] px-4 pb-16 pt-10 text-white sm:px-6">
-      <div className="mx-auto w-full max-w-[1200px]">
+      <div className="mx-auto w-full max-w-300">
         {/* Page Header */}
         <section className="mb-8">
           <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.16em] text-[#CCFF00]">
@@ -182,22 +188,18 @@ export default function MyPlanPage() {
           {sortedWorkouts.length === 0 ? (
             <div className="rounded-xl border border-dashed border-[#343941] bg-[#121316] px-6 py-16 text-center">
               <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#777E89]">
-                {activeTab === 'plan'
-                  ? "No workouts in today's plan"
-                  : 'No saved workouts'}
+                {activeTab === 'plan' ? 'NOTHING HERE YET' : 'NOTHING HERE YET'}
               </p>
 
               <p className="mt-2 text-sm text-[#555C67]">
-                {activeTab === 'plan'
-                  ? 'Add workouts from the library to build your plan.'
-                  : 'Save workouts from the workout details page to see them here.'}
+                Browse the library and add a lift to get today moving.
               </p>
 
               <Link
                 href="/"
-                className="mt-6 inline-flex rounded-sm bg-[#CCFF00] px-5 py-2.5 text-[10px] font-extrabold uppercase tracking-[0.1em] text-black transition hover:bg-[#B8E600]"
+                className="mt-6 inline-flex rounded-sm bg-[#CCFF00] px-5 py-2.5 text-[10px] font-extrabold uppercase tracking-widest text-black transition hover:bg-[#B8E600]"
               >
-                Browse Workouts
+                Go to workouts
               </Link>
             </div>
           ) : (
@@ -216,7 +218,7 @@ export default function MyPlanPage() {
                   >
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                       {/* Image */}
-                      <div className="relative aspect-[16/9] w-full shrink-0 overflow-hidden rounded-lg bg-[#1A1D21] sm:w-[220px]">
+                      <div className="relative aspect-VIDEO w-full shrink-0 overflow-hidden rounded-lg bg-[#1A1D21] sm:w-55">
                         <Image
                           src={workout.image}
                           alt={workout.name}
