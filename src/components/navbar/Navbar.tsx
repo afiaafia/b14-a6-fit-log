@@ -77,24 +77,26 @@ export default function Navbar() {
 
           {/* Desktop Counters */}
           <div className="hidden items-center gap-4 md:flex">
+            {/* Plan */}
             <Link
               href="/my-plan"
               className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[#9CA3AF] transition-colors hover:text-white"
             >
               <span>PLAN</span>
 
-              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#1A2112] px-1.5 text-[10px] font-bold text-[#CCFF00]">
+              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#CCFF00] px-1.5 text-[10px] font-bold text-black">
                 {planCount}
               </span>
             </Link>
 
+            {/* Saved */}
             <Link
               href="/my-plan"
               className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[#9CA3AF] transition-colors hover:text-white"
             >
               <span>SAVED</span>
 
-              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#1A2112] px-1.5 text-[10px] font-bold text-[#CCFF00]">
+              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#16191E] px-1.5 text-[10px] font-bold text-[#9CA3AF]">
                 {savedCount}
               </span>
             </Link>
@@ -138,25 +140,30 @@ export default function Navbar() {
                 );
               })}
 
+              {/* Mobile Counters */}
               <div className="mt-2 flex gap-4 border-t border-[#1F242D] pt-4">
+                {/* Plan */}
                 <Link
                   href="/my-plan"
                   onClick={closeMobileMenu}
                   className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#9CA3AF]"
                 >
-                  PLAN
-                  <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#1A2112] px-1.5 text-[10px] font-bold text-[#CCFF00]">
+                  <span>PLAN</span>
+
+                  <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#CCFF00] px-1.5 text-[10px] font-bold text-black">
                     {planCount}
                   </span>
                 </Link>
 
+                {/* Saved */}
                 <Link
                   href="/my-plan"
                   onClick={closeMobileMenu}
                   className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#9CA3AF]"
                 >
-                  SAVED
-                  <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#1A2112] px-1.5 text-[10px] font-bold text-[#CCFF00]">
+                  <span>SAVED</span>
+
+                  <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#16191E] px-1.5 text-[10px] font-bold text-[#9CA3AF]">
                     {savedCount}
                   </span>
                 </Link>
