@@ -116,10 +116,22 @@ function parseCompletedIds(raw: string): string[] {
   }
 }
 
-function useStoredValue(key: string) {
+function useHydrated() {
+  return useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
+}
+
+function useStoredValue(key: string, hydrated: boolean) {
   const getSnapshot = useCallback(() => {
+    if (!hydrated) {
+      return EMPTY_STORAGE_VALUE;
+    }
+
     return getStorageValue(key);
-  }, [key]);
+  }, [key, hydrated]);
 
   const getServerSnapshot = useCallback(() => {
     return EMPTY_STORAGE_VALUE;
@@ -143,9 +155,11 @@ function writeStorage(key: string, value: unknown) {
 }
 
 export function FitLogProvider({ children }: { children: ReactNode }) {
-  const planRaw = useStoredValue(PLAN_STORAGE_KEY);
-  const savedRaw = useStoredValue(SAVED_STORAGE_KEY);
-  const completedRaw = useStoredValue(COMPLETED_STORAGE_KEY);
+  const hydrated = useHydrated();
+
+  const planRaw = useStoredValue(PLAN_STORAGE_KEY, hydrated);
+  const savedRaw = useStoredValue(SAVED_STORAGE_KEY, hydrated);
+  const completedRaw = useStoredValue(COMPLETED_STORAGE_KEY, hydrated);
 
   const plan = useMemo(() => parseWorkouts(planRaw), [planRaw]);
 
