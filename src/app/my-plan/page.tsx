@@ -188,7 +188,7 @@ export default function MyPlanPage() {
           {sortedWorkouts.length === 0 ? (
             <div className="rounded-xl border border-dashed border-[#343941] bg-[#121316] px-6 py-16 text-center">
               <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#777E89]">
-                {activeTab === 'plan' ? 'NOTHING HERE YET' : 'NOTHING HERE YET'}
+                NOTHING HERE YET
               </p>
 
               <p className="mt-2 text-sm text-[#555C67]">
@@ -218,7 +218,7 @@ export default function MyPlanPage() {
                   >
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                       {/* Image */}
-                      <div className="relative aspect-Video w-full shrink-0 overflow-hidden rounded-lg bg-[#1A1D21] sm:w-55">
+                      <div className="relative h-32 w-full shrink-0 overflow-hidden rounded-lg bg-[#1A1D21] sm:h-32 sm:w-55">
                         <Image
                           src={workout.image}
                           alt={workout.name}

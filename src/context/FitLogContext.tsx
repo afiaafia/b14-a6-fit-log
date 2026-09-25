@@ -116,22 +116,10 @@ function parseCompletedIds(raw: string): string[] {
   }
 }
 
-function useHydrated() {
-  return useSyncExternalStore(
-    () => () => {},
-    () => true,
-    () => false
-  );
-}
-
-function useStoredValue(key: string, hydrated: boolean) {
+function useStoredValue(key: string) {
   const getSnapshot = useCallback(() => {
-    if (!hydrated) {
-      return EMPTY_STORAGE_VALUE;
-    }
-
     return getStorageValue(key);
-  }, [key, hydrated]);
+  }, [key]);
 
   const getServerSnapshot = useCallback(() => {
     return EMPTY_STORAGE_VALUE;
@@ -155,11 +143,9 @@ function writeStorage(key: string, value: unknown) {
 }
 
 export function FitLogProvider({ children }: { children: ReactNode }) {
-  const hydrated = useHydrated();
-
-  const planRaw = useStoredValue(PLAN_STORAGE_KEY, hydrated);
-  const savedRaw = useStoredValue(SAVED_STORAGE_KEY, hydrated);
-  const completedRaw = useStoredValue(COMPLETED_STORAGE_KEY, hydrated);
+  const planRaw = useStoredValue(PLAN_STORAGE_KEY);
+  const savedRaw = useStoredValue(SAVED_STORAGE_KEY);
+  const completedRaw = useStoredValue(COMPLETED_STORAGE_KEY);
 
   const plan = useMemo(() => parseWorkouts(planRaw), [planRaw]);
 
@@ -219,6 +205,7 @@ export function FitLogProvider({ children }: { children: ReactNode }) {
 
   const saveForLater = useCallback((workout: Workout) => {
     const current = parseWorkouts(getStorageValue(SAVED_STORAGE_KEY));
+
     const workoutId = String(workout.id);
 
     if (current.some((item) => String(item.id) === workoutId)) {
