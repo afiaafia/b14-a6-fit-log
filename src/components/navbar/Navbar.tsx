@@ -27,18 +27,6 @@ export default function Navbar() {
     setMobileOpen(false);
   };
 
-  const mainNavActiveClass =
-    'rounded-full bg-[#1A2112] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-[#CCFF00] shadow-[0_0_0_1px_rgba(204,255,0,0.03),0_2px_8px_rgba(0,0,0,0.35)]';
-
-  const mainNavInactiveClass =
-    'rounded-full px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A3AAB7] transition-colors hover:text-white';
-
-  const mobileNavActiveClass =
-    'rounded-full bg-[#1A2112] px-3 py-2 text-xs font-bold uppercase tracking-wider text-[#CCFF00]';
-
-  const mobileNavInactiveClass =
-    'rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-wider text-[#A3AAB7] transition-colors hover:text-white';
-
   return (
     <header className="border-b border-[#1F242D] bg-[#0D0F12]">
       <div className="mx-auto w-full max-w-300 px-5 sm:px-6">
@@ -68,9 +56,14 @@ export default function Navbar() {
             <Link
               href="/"
               aria-current={isWorkoutActive ? 'page' : undefined}
-              className={
-                isWorkoutActive ? mainNavActiveClass : mainNavInactiveClass
-              }
+              className={`rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] transition-colors ${
+                isWorkoutActive
+                  ? 'bg-[#1A2112]'
+                  : 'text-[#A3AAB7] hover:text-white'
+              }`}
+              style={{
+                color: isWorkoutActive ? '#CCFF00' : '#A3AAB7',
+              }}
             >
               Workout
             </Link>
@@ -78,9 +71,14 @@ export default function Navbar() {
             <Link
               href="/my-plan"
               aria-current={isPlanActive ? 'page' : undefined}
-              className={
-                isPlanActive ? mainNavActiveClass : mainNavInactiveClass
-              }
+              className={`rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] transition-colors ${
+                isPlanActive
+                  ? 'bg-[#1A2112]'
+                  : 'text-[#A3AAB7] hover:text-white'
+              }`}
+              style={{
+                color: isPlanActive ? '#CCFF00' : '#A3AAB7',
+              }}
             >
               My Plan
             </Link>
@@ -91,11 +89,10 @@ export default function Navbar() {
             <Link
               href="/my-plan"
               aria-current={isPlanActive ? 'page' : undefined}
-              className={
-                isPlanActive
-                  ? 'flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-[#CCFF00]'
-                  : 'flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A3AAB7] transition-colors hover:text-white'
-              }
+              className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.12em]"
+              style={{
+                color: isPlanActive ? '#CCFF00' : '#A3AAB7',
+              }}
             >
               <span>PLAN</span>
 
@@ -107,20 +104,19 @@ export default function Navbar() {
             <Link
               href="/my-plan?tab=saved"
               aria-current={isSavedActive ? 'page' : undefined}
-              className={
-                isSavedActive
-                  ? 'flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-[#CCFF00]'
-                  : 'flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A3AAB7] transition-colors hover:text-white'
-              }
+              className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.12em]"
+              style={{
+                color: isSavedActive ? '#CCFF00' : '#A3AAB7',
+              }}
             >
               <span>SAVED</span>
 
               <span
-                className={
+                className={`flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] font-bold leading-none ${
                   isSavedActive
-                    ? 'flex h-5 min-w-5 items-center justify-center rounded-full bg-[#CCFF00] px-1.5 text-[10px] font-bold leading-none text-black'
-                    : 'flex h-5 min-w-5 items-center justify-center rounded-full bg-[#16191E] px-1.5 text-[10px] font-bold leading-none text-[#A3AAB7]'
-                }
+                    ? 'bg-[#CCFF00] text-black'
+                    : 'bg-[#16191E] text-[#A3AAB7]'
+                }`}
               >
                 {savedCount}
               </span>
@@ -147,11 +143,14 @@ export default function Navbar() {
                 href="/"
                 onClick={closeMobileMenu}
                 aria-current={isWorkoutActive ? 'page' : undefined}
-                className={
+                className={`rounded-full px-3 py-2 text-xs font-bold uppercase tracking-wider ${
                   isWorkoutActive
-                    ? mobileNavActiveClass
-                    : mobileNavInactiveClass
-                }
+                    ? 'bg-[#1A2112]'
+                    : 'text-[#A3AAB7] hover:text-white'
+                }`}
+                style={{
+                  color: isWorkoutActive ? '#CCFF00' : '#A3AAB7',
+                }}
               >
                 Workout
               </Link>
@@ -160,9 +159,14 @@ export default function Navbar() {
                 href="/my-plan"
                 onClick={closeMobileMenu}
                 aria-current={isPlanActive ? 'page' : undefined}
-                className={
-                  isPlanActive ? mobileNavActiveClass : mobileNavInactiveClass
-                }
+                className={`rounded-full px-3 py-2 text-xs font-bold uppercase tracking-wider ${
+                  isPlanActive
+                    ? 'bg-[#1A2112]'
+                    : 'text-[#A3AAB7] hover:text-white'
+                }`}
+                style={{
+                  color: isPlanActive ? '#CCFF00' : '#A3AAB7',
+                }}
               >
                 My Plan
               </Link>
@@ -172,11 +176,10 @@ export default function Navbar() {
                   href="/my-plan"
                   onClick={closeMobileMenu}
                   aria-current={isPlanActive ? 'page' : undefined}
-                  className={
-                    isPlanActive
-                      ? 'flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#CCFF00]'
-                      : 'flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#A3AAB7]'
-                  }
+                  className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
+                  style={{
+                    color: isPlanActive ? '#CCFF00' : '#A3AAB7',
+                  }}
                 >
                   <span>PLAN</span>
 
@@ -189,20 +192,19 @@ export default function Navbar() {
                   href="/my-plan?tab=saved"
                   onClick={closeMobileMenu}
                   aria-current={isSavedActive ? 'page' : undefined}
-                  className={
-                    isSavedActive
-                      ? 'flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#CCFF00]'
-                      : 'flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#A3AAB7]'
-                  }
+                  className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
+                  style={{
+                    color: isSavedActive ? '#CCFF00' : '#A3AAB7',
+                  }}
                 >
                   <span>SAVED</span>
 
                   <span
-                    className={
+                    className={`flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] font-bold leading-none ${
                       isSavedActive
-                        ? 'flex h-5 min-w-5 items-center justify-center rounded-full bg-[#CCFF00] px-1.5 text-[10px] font-bold leading-none text-black'
-                        : 'flex h-5 min-w-5 items-center justify-center rounded-full bg-[#16191E] px-1.5 text-[10px] font-bold leading-none text-[#A3AAB7]'
-                    }
+                        ? 'bg-[#CCFF00] text-black'
+                        : 'bg-[#16191E] text-[#A3AAB7]'
+                    }`}
                   >
                     {savedCount}
                   </span>
