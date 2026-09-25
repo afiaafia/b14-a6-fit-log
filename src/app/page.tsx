@@ -46,10 +46,7 @@ export default function Home() {
     <main className="min-h-screen bg-[#08090B] text-white">
       <Hero />
 
-      <section
-        id="library"
-        className="mx-auto w-full max-w-[1200px] px-6 py-12"
-      >
+      <section id="library" className="mx-auto w-full max-w-300 px-6 py-12">
         {/* Library Header */}
         <div className="mb-6">
           <h2 className="text-2xl font-black uppercase tracking-tight text-white">
@@ -63,9 +60,10 @@ export default function Home() {
 
         {/* Loading State */}
         {loading && (
-          <div className="flex min-h-[300px] items-center justify-center rounded-lg border border-[#1F242D] bg-[#13161B]">
+          <div className="flex min-h-75 items-center justify-center rounded-lg border border-[#1F242D] bg-[#13161B]">
             <div className="flex flex-col items-center gap-3">
               <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#303743] border-t-[#CCFF00]" />
+
               <p className="text-xs text-[#9CA3AF]">Loading workouts...</p>
             </div>
           </div>
