@@ -26,6 +26,10 @@ export default function WorkoutActions({ workout }: WorkoutActionsProps) {
     }
 
     addToPlan(workout);
+
+    toast.success("Added to today's plan.", {
+      toastId: `action-plan-success-${workout.id}`,
+    });
   };
 
   const handleSaveClick = () => {
@@ -38,6 +42,10 @@ export default function WorkoutActions({ workout }: WorkoutActionsProps) {
     }
 
     saveForLater(workout);
+
+    toast.success('Saved for later.', {
+      toastId: `action-save-success-${workout.id}`,
+    });
   };
 
   return (
