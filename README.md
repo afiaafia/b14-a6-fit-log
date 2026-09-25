@@ -103,7 +103,7 @@ fit-log/
 ├── postcss.config.mjs
 ├── README.md
 └── tsconfig.json
-````
+```
 
 ## 🚀 Getting Started
 
