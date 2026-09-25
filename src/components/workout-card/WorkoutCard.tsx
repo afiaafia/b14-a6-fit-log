@@ -17,7 +17,7 @@ export default function WorkoutCard({ workout }: WorkoutCardProps) {
       className="group flex h-full flex-col overflow-hidden rounded-xl border border-[#1F242D] bg-[#121316] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#343A45]"
     >
       {/* Image */}
-      <div className="relative aspect-[16/9] w-full overflow-hidden bg-[#181A1F]">
+      <div className="relative aspect-video w-full overflow-hidden bg-[#181A1F]">
         <Image
           src={workout.image}
           alt={workout.name}
