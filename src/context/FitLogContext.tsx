@@ -19,6 +19,8 @@ type FitLogContextType = {
   planCount: number;
   savedCount: number;
 
+  completedPlanIds: string[];
+
   addToPlan: (workout: Workout) => void;
   removeFromPlan: (workoutId: string) => void;
 
@@ -27,12 +29,17 @@ type FitLogContextType = {
 
   isInPlan: (workoutId: string) => boolean;
   isSaved: (workoutId: string) => boolean;
+
+  markAsDone: (workoutId: string) => void;
+  markAsUndone: (workoutId: string) => void;
+  isCompleted: (workoutId: string) => boolean;
 };
 
 const FitLogContext = createContext<FitLogContextType | undefined>(undefined);
 
 const PLAN_STORAGE_KEY = 'fitlog-plan';
 const SAVED_STORAGE_KEY = 'fitlog-saved';
+const COMPLETED_STORAGE_KEY = 'fitlog-completed';
 
 function readStoredWorkouts(key: string): Workout[] {
   if (typeof window === 'undefined') {
@@ -53,9 +60,33 @@ function readStoredWorkouts(key: string): Workout[] {
     }
 
     return parsed.map((workout) => ({
-      ...workout,
-      id: String(workout.id),
+      ...(workout as Workout),
+      id: String((workout as Workout).id),
     })) as Workout[];
+  } catch {
+    return [];
+  }
+}
+
+function readCompletedIds(): string[] {
+  if (typeof window === 'undefined') {
+    return [];
+  }
+
+  try {
+    const raw = localStorage.getItem(COMPLETED_STORAGE_KEY);
+
+    if (!raw) {
+      return [];
+    }
+
+    const parsed: unknown = JSON.parse(raw);
+
+    if (!Array.isArray(parsed)) {
+      return [];
+    }
+
+    return parsed.map((id) => String(id));
   } catch {
     return [];
   }
@@ -64,15 +95,13 @@ function readStoredWorkouts(key: string): Workout[] {
 export function FitLogProvider({ children }: { children: ReactNode }) {
   const [plan, setPlan] = useState<Workout[]>([]);
   const [saved, setSaved] = useState<Workout[]>([]);
+  const [completedPlanIds, setCompletedPlanIds] = useState<string[]>([]);
   const [hydrated, setHydrated] = useState(false);
 
-  /*
-   * Read localStorage only after hydration.
-   * This prevents the Plan counter hydration mismatch.
-   */
   useEffect(() => {
     setPlan(readStoredWorkouts(PLAN_STORAGE_KEY));
     setSaved(readStoredWorkouts(SAVED_STORAGE_KEY));
+    setCompletedPlanIds(readCompletedIds());
     setHydrated(true);
   }, []);
 
@@ -96,11 +125,19 @@ export function FitLogProvider({ children }: { children: ReactNode }) {
         },
       ];
     });
+
+    setCompletedPlanIds((current) =>
+      current.filter((id) => id !== String(workout.id))
+    );
   }, []);
 
   const removeFromPlan = useCallback((workoutId: string) => {
-    setPlan((current) =>
-      current.filter((item) => String(item.id) !== String(workoutId))
+    const id = String(workoutId);
+
+    setPlan((current) => current.filter((item) => String(item.id) !== id));
+
+    setCompletedPlanIds((current) =>
+      current.filter((completedId) => completedId !== id)
     );
   }, []);
 
@@ -128,6 +165,26 @@ export function FitLogProvider({ children }: { children: ReactNode }) {
     );
   }, []);
 
+  const markAsDone = useCallback((workoutId: string) => {
+    const id = String(workoutId);
+
+    setCompletedPlanIds((current) => {
+      if (current.includes(id)) {
+        return current;
+      }
+
+      return [...current, id];
+    });
+  }, []);
+
+  const markAsUndone = useCallback((workoutId: string) => {
+    const id = String(workoutId);
+
+    setCompletedPlanIds((current) =>
+      current.filter((completedId) => completedId !== id)
+    );
+  }, []);
+
   const isInPlan = useCallback(
     (workoutId: string) =>
       plan.some((item) => String(item.id) === String(workoutId)),
@@ -138,6 +195,11 @@ export function FitLogProvider({ children }: { children: ReactNode }) {
     (workoutId: string) =>
       saved.some((item) => String(item.id) === String(workoutId)),
     [saved]
+  );
+
+  const isCompleted = useCallback(
+    (workoutId: string) => completedPlanIds.includes(String(workoutId)),
+    [completedPlanIds]
   );
 
   useEffect(() => {
@@ -156,6 +218,17 @@ export function FitLogProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(SAVED_STORAGE_KEY, JSON.stringify(saved));
   }, [saved, hydrated]);
 
+  useEffect(() => {
+    if (!hydrated) {
+      return;
+    }
+
+    localStorage.setItem(
+      COMPLETED_STORAGE_KEY,
+      JSON.stringify(completedPlanIds)
+    );
+  }, [completedPlanIds, hydrated]);
+
   const value = useMemo<FitLogContextType>(
     () => ({
       plan,
@@ -164,6 +237,8 @@ export function FitLogProvider({ children }: { children: ReactNode }) {
       planCount: plan.length,
       savedCount: saved.length,
 
+      completedPlanIds,
+
       addToPlan,
       removeFromPlan,
 
@@ -172,16 +247,28 @@ export function FitLogProvider({ children }: { children: ReactNode }) {
 
       isInPlan,
       isSaved,
+
+      markAsDone,
+      markAsUndone,
+      isCompleted,
     }),
     [
       plan,
       saved,
+      completedPlanIds,
+
       addToPlan,
       removeFromPlan,
+
       saveForLater,
       removeFromSaved,
+
       isInPlan,
       isSaved,
+
+      markAsDone,
+      markAsUndone,
+      isCompleted,
     ]
   );
 

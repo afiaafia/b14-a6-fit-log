@@ -1,4 +1,7 @@
 import type { Metadata } from 'next';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import './globals.css';
 
 import Navbar from '@/components/navbar/Navbar';
@@ -21,8 +24,21 @@ export default function RootLayout({
       <body>
         <FitLogProvider>
           <Navbar />
+
           {children}
+
           <Footer />
+
+          <ToastContainer
+            position="top-right"
+            autoClose={2500}
+            hideProgressBar={false}
+            newestOnTop
+            closeOnClick
+            pauseOnHover
+            draggable
+            theme="dark"
+          />
         </FitLogProvider>
       </body>
     </html>
