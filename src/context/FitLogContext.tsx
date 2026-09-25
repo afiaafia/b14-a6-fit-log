@@ -46,22 +46,32 @@ function getStoredWorkouts(key: string): Workout[] {
       return [];
     }
 
-    const parsed = JSON.parse(stored);
+    const parsed: unknown = JSON.parse(stored);
 
-    return Array.isArray(parsed) ? parsed : [];
+    return Array.isArray(parsed) ? (parsed as Workout[]) : [];
   } catch {
     return [];
   }
 }
 
 export function FitLogProvider({ children }: { children: ReactNode }) {
-  const [plan, setPlan] = useState<Workout[]>(() =>
-    getStoredWorkouts(PLAN_STORAGE_KEY)
-  );
+  /*
+   * Start with empty arrays on both server and first client render.
+   * This prevents the server/client hydration mismatch caused by
+   * reading localStorage during useState initialization.
+   */
+  const [plan, setPlan] = useState<Workout[]>([]);
+  const [saved, setSaved] = useState<Workout[]>([]);
+  const [hydrated, setHydrated] = useState(false);
 
-  const [saved, setSaved] = useState<Workout[]>(() =>
-    getStoredWorkouts(SAVED_STORAGE_KEY)
-  );
+  /*
+   * Load localStorage only after the first client render.
+   */
+  useEffect(() => {
+    setPlan(getStoredWorkouts(PLAN_STORAGE_KEY));
+    setSaved(getStoredWorkouts(SAVED_STORAGE_KEY));
+    setHydrated(true);
+  }, []);
 
   const addToPlan = useCallback((workout: Workout) => {
     setPlan((currentPlan) => {
@@ -85,11 +95,6 @@ export function FitLogProvider({ children }: { children: ReactNode }) {
     );
   }, []);
 
-  const isInPlan = useCallback(
-    (workoutId: string) => plan.some((item) => item.id === workoutId),
-    [plan]
-  );
-
   const saveForLater = useCallback((workout: Workout) => {
     setSaved((currentSaved) => {
       const alreadySaved = currentSaved.some((item) => item.id === workout.id);
@@ -108,26 +113,35 @@ export function FitLogProvider({ children }: { children: ReactNode }) {
     );
   }, []);
 
+  const isInPlan = useCallback(
+    (workoutId: string) => plan.some((item) => item.id === workoutId),
+    [plan]
+  );
+
   const isSaved = useCallback(
     (workoutId: string) => saved.some((item) => item.id === workoutId),
     [saved]
   );
 
+  /*
+   * Don't write anything to localStorage until the initial
+   * localStorage read has completed.
+   */
   useEffect(() => {
-    if (typeof window === 'undefined') {
+    if (!hydrated || typeof window === 'undefined') {
       return;
     }
 
     localStorage.setItem(PLAN_STORAGE_KEY, JSON.stringify(plan));
-  }, [plan]);
+  }, [plan, hydrated]);
 
   useEffect(() => {
-    if (typeof window === 'undefined') {
+    if (!hydrated || typeof window === 'undefined') {
       return;
     }
 
     localStorage.setItem(SAVED_STORAGE_KEY, JSON.stringify(saved));
-  }, [saved]);
+  }, [saved, hydrated]);
 
   const value = useMemo<FitLogContextType>(
     () => ({

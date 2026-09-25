@@ -1,14 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
-  --muted: #64748b;
-  --border: #e2e8f0;
-  --card: #ffffff;
-  --primary: #0f172a;
-  --primary-foreground: #ffffff;
-  --accent: #2563eb;
+  --background: #08090b;
+  --foreground: #f8fafc;
+  --muted: #8f96a1;
+  --border: #1f242d;
+  --card: #13161b;
+  --accent: #ccff00;
 }
 
 * {
@@ -21,6 +19,7 @@ html {
 
 body {
   margin: 0;
+  min-height: 100vh;
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
@@ -41,8 +40,8 @@ a {
 }
 
 ::selection {
-  background: #bfdbfe;
-  color: #0f172a;
+  background: #ccff00;
+  color: #08090b;
 }
 
 .container-fitlog {
@@ -50,60 +49,8 @@ a {
   margin-inline: auto;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 640px) {
   .container-fitlog {
     width: min(100% - 3rem, 1200px);
   }
-}
-
-.card-fitlog {
-  border: 1px solid var(--border);
-  border-radius: 1rem;
-  background: var(--card);
-}
-
-.btn-primary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  border-radius: 0.75rem;
-  background: var(--primary);
-  color: var(--primary-foreground);
-  padding: 0.7rem 1rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  transition:
-    background-color 0.2s ease,
-    transform 0.2s ease;
-}
-
-.btn-primary:hover {
-  background: #1e293b;
-}
-
-.btn-primary:active {
-  transform: translateY(1px);
-}
-
-.btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  border: 1px solid var(--border);
-  border-radius: 0.75rem;
-  background: var(--card);
-  color: var(--foreground);
-  padding: 0.7rem 1rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  transition:
-    background-color 0.2s ease,
-    border-color 0.2s ease;
-}
-
-.btn-secondary:hover {
-  background: #f1f5f9;
-  border-color: #cbd5e1;
 }
