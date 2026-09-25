@@ -1,25 +1,20 @@
-import Image from 'next/image';
-import Link from 'next/link';
+import { Dumbbell } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer className="border-t border-[#292b2f] bg-[#0d0f10]">
-      <div className="container-fitlog flex min-h-14 items-center justify-between gap-4 py-3">
-        <Link href="/" className="flex items-center gap-1.5">
-          <Image
-            src="/icons/logo.png"
-            alt="FitLog logo"
-            width={15}
-            height={15}
-            className="h-[15px] w-[15px] object-contain"
-          />
+    <footer className="border-t border-[#1F242D] bg-[#08090B]">
+      <div className="mx-auto flex w-full max-w-300 flex-col gap-4 px-6 py-6 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#CCFF00] text-[#08090B]">
+            <Dumbbell className="h-4 w-4" strokeWidth={2.5} />
+          </div>
 
-          <span className="text-[7px] font-bold uppercase tracking-[0.1em] text-white">
-            FitLog
+          <span className="text-sm font-black tracking-widest text-white">
+            FITLOG
           </span>
-        </Link>
+        </div>
 
-        <p className="text-right text-[6px] text-[#555a60] sm:text-[7px]">
+        <p className="text-xs text-[#6B7280]">
           © 2026 FitLog — Workout Library. Train hard, log honest.
         </p>
       </div>
