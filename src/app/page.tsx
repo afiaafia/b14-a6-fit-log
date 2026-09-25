@@ -27,10 +27,6 @@ export default async function HomePage() {
       >
         {/* Library Header */}
         <div className="mb-6">
-          <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#CCFF00]">
-            TRAIN SMART
-          </p>
-
           <h2 className="text-2xl font-black uppercase leading-none tracking-tight text-white sm:text-3xl">
             THE LIBRARY
           </h2>
