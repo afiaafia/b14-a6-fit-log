@@ -2,35 +2,39 @@
 
 > **Train with intent. Log every set.**
 
-FITLOG is a responsive workout library and personal workout-planning web application built with **Next.js**, **TypeScript**, and **Tailwind CSS**. It allows users to explore workouts, view detailed exercise information, add exercises to today’s plan, save workouts for later, and manage their workout plan from a dedicated dashboard.
+FITLOG is a responsive workout library and personal workout-planning web application built with **Next.js, TypeScript, and Tailwind CSS**. Users can explore workouts, view detailed exercise information, add workouts to today's plan, save workouts for later, track plan metrics, mark workouts as completed, and manage their selections from a dedicated dashboard.
+
+## 🌐 Live Website
+
+**[FITLOG — Live Demo](https://b14-a6-fit-log-six.vercel.app/)**
 
 ## ✨ Features
 
-* **Workout Library** — Browse workouts covering different muscle groups with duration, calories, rating, equipment, and difficulty information.
-* **Workout Details** — View complete exercise information including description, muscle groups, equipment, difficulty, sets, reps, duration, calories, rating, and step-by-step instructions.
-* **Today’s Plan** — Add workouts to a personal plan and manage them from the My Plan page.
-* **Save for Later** — Save workouts for quick access without adding them to today’s plan.
-* **Live Plan Metrics** — Track the number of exercises, total workout minutes, and estimated calories in the current plan.
-* **Workout Completion** — Mark planned workouts as completed and receive feedback through toast notifications.
-* **Remove Workouts** — Remove exercises from Today’s Plan or Saved workouts.
-* **Responsive Design** — Optimized for desktop, tablet, and mobile screen sizes.
-* **Workout Sorting** — Sort the current workout list by duration, calories, or rating.
-* **Persistent Data** — Workout plan and saved workouts are persisted using browser local storage.
-* **Loading & Error States** — Includes workout loading feedback, invalid-route handling, and relevant user feedback.
-* **API Integration** — Workout data is fetched from the provided FitLog workout API.
+- **Workout Library** — Browse workouts with exercise name, image, muscle groups, equipment, duration, calories, rating, and difficulty.
+- **Workout Details** — View complete workout information including description, muscle groups, equipment, difficulty, sets, reps, rest, duration, calories, rating, and step-by-step instructions.
+- **Add to Today's Plan** — Add a workout to today's plan directly from its details page.
+- **Save for Later** — Save workouts separately for quick access without adding them to today's plan.
+- **Live Plan Metrics** — Track exercise count, total workout minutes, and estimated calories for today's plan.
+- **Workout Completion** — Mark planned workouts as completed with visual feedback and toast notifications.
+- **Remove Workouts** — Remove workouts from Today's Plan or Saved workouts.
+- **Workout Sorting** — Sort workouts by duration, calories, or rating, with duration as the default sorting option.
+- **Persistent Data** — Today's Plan, Saved workouts, and completion state persist in browser local storage.
+- **Loading & 404 States** — Provides loading feedback while workouts are fetched and handles invalid routes with a custom 404 page.
+- **Toast Notifications** — Gives relevant feedback after actions such as adding, saving, completing, or removing workouts.
+- **Responsive Design** — Optimized for desktop, tablet, and mobile screen sizes.
+- **API Integration** — Workout data is fetched from the provided FitLog REST API.
 
 ## 🛠️ Technologies
 
-* **Next.js 16**
-* **React**
-* **TypeScript**
-* **Tailwind CSS**
-* **Next.js App Router**
-* **Lucide React** — Icons
-* **React Toastify** — Toast notifications
-* **REST API** — Workout data
-* **LocalStorage** — Client-side plan and saved-workout persistence
-* **pnpm** — Package manager
+- **Next.js 16** — React framework with App Router
+- **React**
+- **TypeScript**
+- **Tailwind CSS**
+- **Lucide React** — Icons
+- **React Toastify** — Toast notifications
+- **REST API** — Workout data
+- **LocalStorage** — Client-side persistence
+- **pnpm** — Package manager
 
 ## 📁 Project Structure
 
@@ -60,6 +64,7 @@ fit-log/
 │   │   │
 │   │   ├── globals.css
 │   │   ├── layout.tsx
+│   │   ├── loading.tsx
 │   │   ├── not-found.tsx
 │   │   └── page.tsx
 │   │
@@ -69,7 +74,10 @@ fit-log/
 │   │   ├── hero/
 │   │   │   └── Hero.tsx
 │   │   ├── navbar/
-│   │   │   └── Navbar.tsx
+│   │   │   ├── Navbar.tsx
+│   │   │   └── NavbarWrapper.tsx
+│   │   ├── sort-dropdown/
+│   │   │   └── SortDropdown.tsx
 │   │   ├── workout-card/
 │   │   │   └── WorkoutCard.tsx
 │   │   └── workout-details/
@@ -95,16 +103,16 @@ fit-log/
 ├── postcss.config.mjs
 ├── README.md
 └── tsconfig.json
-```
+````
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 
-Make sure you have installed:
+Make sure the following are installed:
 
-* Node.js
-* pnpm
+* [Node.js](https://nodejs.org/)
+* [pnpm](https://pnpm.io/)
 
 ### Clone the repository
 
@@ -136,6 +144,12 @@ The application will be available at:
 http://localhost:3000
 ```
 
+### Run lint
+
+```bash
+pnpm lint
+```
+
 ### Build for production
 
 ```bash
@@ -148,97 +162,98 @@ pnpm build
 pnpm start
 ```
 
-### Run lint
-
-```bash
-pnpm lint
-```
-
 ## 🔄 Application Flow
 
 ```text
-Workout Library
-      │
-      ├── Browse workouts
-      │
-      └── Select a workout
-              │
-              ▼
-       Workout Details
-              │
-        ┌─────┴─────┐
-        │           │
-        ▼           ▼
- Add to Plan   Save for Later
-        │           │
-        └─────┬─────┘
-              ▼
-           My Plan
-              │
-        ┌─────┴─────┐
-        │           │
-        ▼           ▼
-   Mark as Done   Remove
+Home / Workout Library
+        │
+        ├── Browse & Sort Workouts
+        │
+        └── Select a Workout
+                │
+                ▼
+         Workout Details
+                │
+          ┌─────┴─────┐
+          │           │
+          ▼           ▼
+   Add to Plan   Save for Later
+          │           │
+          └─────┬─────┘
+                ▼
+             My Plan
+                │
+          ┌─────┴─────┐
+          │           │
+          ▼           ▼
+    Mark as Done    Remove
 ```
 
-## 📱 Pages
+## 📱 Pages & Routes
 
-### Home
+### Home — `/`
 
 The home page contains:
 
-* Navigation bar
+* Responsive navigation bar
 * Hero section
 * Workout library
 * Workout sorting
 * Responsive workout cards
 * Footer
 
-### Workout Details
+The **Browse Workouts** button scrolls to the workout library section.
 
-Each workout has a dedicated dynamic route:
+### Workout Details — `/workout/[id]`
 
-```text
-/workout/[id]
-```
+Each workout has a dedicated dynamic detail page containing:
 
-The page provides complete workout information and actions for adding or saving the workout.
+* Workout image
+* Name and description
+* Muscle groups
+* Equipment
+* Difficulty
+* Duration
+* Calories
+* Rating
+* Sets, reps, and rest
+* Step-by-step instructions
+* **Add to Today's Plan**
+* **Save for Later**
 
-### My Plan
+### My Plan — `/my-plan`
 
-The workout management dashboard is available at:
+The My Plan dashboard contains:
 
-```text
-/my-plan
-```
-
-It contains:
-
-* Today's Plan
-* Saved workouts
+* Today's Plan and Saved tabs
 * Exercise count
 * Total duration
 * Estimated calories
-* Workout completion
-* Remove actions
+* Workout cards
+* View Details action
+* Mark as Done action
+* Remove action
 * Empty states
+* Workout sorting
 
-### 404 Page
+The Saved tab is also accessible from the navbar.
+
+### 404 — Invalid Routes
 
 Invalid routes are handled with a custom not-found page.
 
-## 🔌 API
+## 🔌 API Integration
 
-FITLOG retrieves workout information from the provided workout API.
+FITLOG retrieves workout information from the provided FitLog REST API.
 
-The application uses API functions for:
+The application uses:
 
 ```text
-GET /api/fitlog
-GET /api/fitlog/:id
+GET https://api.abcz.workers.dev/api/fitlog
+GET https://api.abcz.workers.dev/api/fitlog/:id
 ```
 
-Workout data includes information such as:
+Workout data includes:
 
 * Name
 * Description
@@ -254,15 +269,23 @@ Workout data includes information such as:
 * Rest
 * Instructions
 
+The project also contains Next.js API route handlers under:
+
+```text
+src/app/api/workouts/
+```
+
 ## 💾 Data Persistence
 
-FITLOG uses **localStorage** to preserve:
+FITLOG uses **browser localStorage** to preserve:
 
 * Today's Plan
 * Saved workouts
 * Workout completion state
 
-This allows the user's selected workouts to remain available after refreshing the page.
+This allows selected workouts and their completion state to remain available after refreshing the page.
+
+Today's Plan supports a maximum of **5 workouts**.
 
 ## 📊 Workout Management
 
@@ -270,74 +293,113 @@ Users can:
 
 1. Browse available workouts.
 2. Sort workouts by duration, calories, or rating.
-3. Open a workout's details.
+3. Open a workout's detail page.
 4. Add a workout to Today's Plan.
 5. Save a workout for later.
-6. View selected workouts from My Plan.
-7. Mark a workout as completed.
-8. Remove workouts from the plan.
-9. View live workout metrics.
+6. View Today's Plan and Saved workouts.
+7. Track total exercises, minutes, and calories.
+8. Mark planned workouts as completed.
+9. Remove workouts from the plan or saved list.
+10. View workout details again from My Plan.
 
 ## 📐 Responsive Design
 
-The interface is designed to work across:
+The interface is designed for:
 
 * Desktop
 * Laptop
 * Tablet
 * Mobile
 
-The workout library and My Plan layout adapt to different viewport sizes while maintaining usability.
+The navigation, hero section, workout library, workout cards, detail page, and My Plan dashboard adapt to different viewport sizes.
 
 ## 📦 Available Scripts
 
 | Command      | Description                   |
 | ------------ | ----------------------------- |
 | `pnpm dev`   | Starts the development server |
+| `pnpm lint`  | Runs ESLint                   |
 | `pnpm build` | Creates a production build    |
 | `pnpm start` | Starts the production server  |
-| `pnpm lint`  | Runs ESLint                   |
 
 ## 🌐 Deployment
 
-The application can be deployed using platforms that support Next.js, such as Vercel.
+FITLOG is deployed on **Vercel**.
 
-Before deployment, verify:
+**Live Website:**
+[https://b14-a6-fit-log-six.vercel.app/](https://b14-a6-fit-log-six.vercel.app/)
+
+Before deployment, verify the project locally:
 
 ```bash
 pnpm lint
 pnpm build
 ```
 
-Then test the deployed application by:
+### Production QA Checklist
 
-* Opening the home page
-* Opening a workout details page
-* Opening `/my-plan`
-* Testing Add to Plan
-* Testing Save for Later
-* Testing Mark as Done
-* Testing Remove
-* Refreshing different routes
-* Checking invalid routes
+After deployment, verify:
 
-## 📌 Project Information
+* Home page loads correctly.
+* Navigation links work.
+* Active navigation state is displayed correctly.
+* Browse Workouts scrolls to the library.
+* Workout cards open their detail pages.
+* Add to Today's Plan works and updates the navbar counter.
+* Save for Later works and updates the navbar counter.
+* My Plan tabs work correctly.
+* Plan metrics update dynamically.
+* Mark as Done works with feedback.
+* Remove actions work with feedback.
+* Data remains after a page refresh.
+* Workout detail routes work after a refresh.
+* Mobile and tablet layouts remain usable.
+* Invalid routes display the 404 page.
 
-**Project:** FITLOG
-**Type:** Workout Library & Workout Planner
-**Framework:** Next.js
-**Language:** TypeScript
-**Styling:** Tailwind CSS
-**Package Manager:** pnpm
+## 📌 Assignment 6 Requirements Covered
 
-## 👤 Submission
+This project covers the main Assignment 6 requirements, including:
 
-**Live Website:**
-*Add your deployed Vercel/Netlify URL here*
+* Responsive mobile, tablet, and desktop UI
+* Figma-inspired navbar with active navigation and Plan/Saved counters
+* Workout Library with API data
+* Workout detail page
+* Add to Today's Plan
+* Save for Later
+* My Plan dashboard
+* Live exercise, minutes, and calories metrics
+* Loading state while fetching workouts
+* Toast notifications for user actions
+* Mark as Done and Remove functionality
+* Duration, Calories, and Rating sorting
+* LocalStorage persistence
+* Custom 404 handling
+* Vercel deployment
+* Meaningful Git commit history
 
-**GitHub Repository:**
-[FITLOG GitHub Repository](https://github.com/afiaafia/b14-a6-fit-log?utm_source=chatgpt.com)
+## 📄 Project Information
+
+| Item                | Details                           |
+| ------------------- | --------------------------------- |
+| **Project**         | FITLOG                            |
+| **Type**            | Workout Library & Workout Planner |
+| **Framework**       | Next.js 16                        |
+| **Language**        | TypeScript                        |
+| **Styling**         | Tailwind CSS                      |
+| **Architecture**    | Next.js App Router                |
+| **Data Source**     | FitLog REST API                   |
+| **Persistence**     | Browser localStorage              |
+| **Package Manager** | pnpm                              |
+| **Deployment**      | Vercel                            |
+
+## 🔗 Links
+
+* **Live Website:** [https://b14-a6-fit-log-six.vercel.app/](https://b14-a6-fit-log-six.vercel.app/)
+* **GitHub Repository:** [https://github.com/afiaafia/b14-a6-fit-log](https://github.com/afiaafia/b14-a6-fit-log)
 
 ---
 
 > **FITLOG — Train with intent. Log every set.**
+
+````
+
