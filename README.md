@@ -329,33 +329,6 @@ FITLOG is deployed on **Vercel**.
 **Live Website:**
 [https://b14-a6-fit-log-six.vercel.app/](https://b14-a6-fit-log-six.vercel.app/)
 
-Before deployment, verify the project locally:
-
-```bash
-pnpm lint
-pnpm build
-```
-
-### Production QA Checklist
-
-After deployment, verify:
-
-* Home page loads correctly.
-* Navigation links work.
-* Active navigation state is displayed correctly.
-* Browse Workouts scrolls to the library.
-* Workout cards open their detail pages.
-* Add to Today's Plan works and updates the navbar counter.
-* Save for Later works and updates the navbar counter.
-* My Plan tabs work correctly.
-* Plan metrics update dynamically.
-* Mark as Done works with feedback.
-* Remove actions work with feedback.
-* Data remains after a page refresh.
-* Workout detail routes work after a refresh.
-* Mobile and tablet layouts remain usable.
-* Invalid routes display the 404 page.
-
 ## 📄 Project Information
 
 | Item                | Details                           |
