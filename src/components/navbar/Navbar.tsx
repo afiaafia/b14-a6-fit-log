@@ -16,11 +16,12 @@ export default function Navbar() {
 
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  const isWorkoutActive = pathname === '/';
+
   const isSavedActive =
     pathname === '/my-plan' && searchParams.get('tab') === 'saved';
 
-  const isPlanActive =
-    pathname === '/my-plan' && searchParams.get('tab') !== 'saved';
+  const isPlanActive = pathname === '/my-plan' && !isSavedActive;
 
   const closeMobileMenu = () => {
     setMobileOpen(false);
@@ -55,7 +56,7 @@ export default function Navbar() {
             <Link
               href="/"
               className={
-                pathname === '/'
+                isWorkoutActive
                   ? 'rounded-full bg-[#1A2112] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-[#CCFF00] shadow-[0_0_0_1px_rgba(204,255,0,0.03),0_2px_8px_rgba(0,0,0,0.35)]'
                   : 'rounded-full px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A3AAB7] transition-colors hover:text-white'
               }
@@ -134,7 +135,7 @@ export default function Navbar() {
                 href="/"
                 onClick={closeMobileMenu}
                 className={
-                  pathname === '/'
+                  isWorkoutActive
                     ? 'rounded-full bg-[#1A2112] px-3 py-2 text-xs font-bold uppercase tracking-wider text-[#CCFF00]'
                     : 'rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-wider text-[#A3AAB7] transition-colors hover:text-white'
                 }
