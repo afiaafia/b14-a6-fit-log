@@ -356,27 +356,6 @@ After deployment, verify:
 * Mobile and tablet layouts remain usable.
 * Invalid routes display the 404 page.
 
-## 📌 Assignment 6 Requirements Covered
-
-This project covers the main Assignment 6 requirements, including:
-
-* Responsive mobile, tablet, and desktop UI
-* Figma-inspired navbar with active navigation and Plan/Saved counters
-* Workout Library with API data
-* Workout detail page
-* Add to Today's Plan
-* Save for Later
-* My Plan dashboard
-* Live exercise, minutes, and calories metrics
-* Loading state while fetching workouts
-* Toast notifications for user actions
-* Mark as Done and Remove functionality
-* Duration, Calories, and Rating sorting
-* LocalStorage persistence
-* Custom 404 handling
-* Vercel deployment
-* Meaningful Git commit history
-
 ## 📄 Project Information
 
 | Item                | Details                           |
