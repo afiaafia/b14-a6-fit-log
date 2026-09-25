@@ -218,7 +218,7 @@ export default function MyPlanPage() {
                   >
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                       {/* Image */}
-                      <div className="relative aspect-VIDEO w-full shrink-0 overflow-hidden rounded-lg bg-[#1A1D21] sm:w-55">
+                      <div className="relative aspect-Video w-full shrink-0 overflow-hidden rounded-lg bg-[#1A1D21] sm:w-55">
                         <Image
                           src={workout.image}
                           alt={workout.name}
