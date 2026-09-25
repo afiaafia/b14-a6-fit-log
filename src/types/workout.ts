@@ -1,3 +1,5 @@
+export type WorkoutDifficulty = 'beginner' | 'intermediate' | 'advanced';
+
 export type Workout = {
   id: string;
   name: string;
@@ -5,7 +7,7 @@ export type Workout = {
   description: string;
   muscleGroups: string[];
   equipment: string;
-  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  difficulty: WorkoutDifficulty;
   duration: number;
   caloriesBurned: number;
   rating: number;
@@ -14,3 +16,10 @@ export type Workout = {
   rest: number;
   instructions: string[];
 };
+
+export type WorkoutApiResponse =
+  | Workout[]
+  | {
+      data?: Workout[];
+      workouts?: Workout[];
+    };

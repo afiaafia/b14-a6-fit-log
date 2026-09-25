@@ -1,7 +1,18 @@
+'use client';
+
 import Image from 'next/image';
-import Link from 'next/link';
-import { ArrowLeft, Clock3, Dumbbell, Flame, Star, Target } from 'lucide-react';
+import {
+  Clock3,
+  Dumbbell,
+  Flame,
+  Gauge,
+  Layers3,
+  Repeat2,
+  Star,
+} from 'lucide-react';
+
 import type { Workout } from '@/types/workout';
+import WorkoutActions from './WorkoutActions';
 
 interface WorkoutDetailsProps {
   workout: Workout;
@@ -9,122 +20,104 @@ interface WorkoutDetailsProps {
 
 export default function WorkoutDetails({ workout }: WorkoutDetailsProps) {
   return (
-    <section className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
-      <Link
-        href="/"
-        className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-gray-600 transition hover:text-gray-900"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Back to Workouts
-      </Link>
-
-      <div className="grid gap-8 lg:grid-cols-2">
-        <div className="relative aspect-4/3 overflow-hidden rounded-2xl bg-gray-100">
+    <section className="overflow-hidden rounded-xl border border-[#1F242D] bg-[#121316]">
+      <div className="grid grid-cols-1 lg:grid-cols-2">
+        {/* Image */}
+        <div className="relative min-h-[320px] bg-[#181A1F] sm:min-h-[420px] lg:min-h-[620px]">
           <Image
             src={workout.image}
             alt={workout.name}
             fill
+            priority
+            sizes="(max-width: 1023px) 100vw, 50vw"
             className="object-cover"
-            sizes="(max-width: 1024px) 100vw, 50vw"
           />
         </div>
 
-        <div>
-          <div className="mb-4 flex flex-wrap gap-2">
-            {workout.muscleGroups.map((muscle) => (
+        {/* Details */}
+        <div className="flex flex-col p-5 sm:p-7 lg:p-8">
+          {/* Heading */}
+          <div>
+            <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#CCFF00]">
+              WORKOUT DETAILS
+            </p>
+
+            <h1 className="text-3xl font-black uppercase leading-none tracking-tight text-white sm:text-4xl">
+              {workout.name}
+            </h1>
+
+            <p className="mt-4 max-w-xl text-xs leading-5 text-[#8A929D]">
+              {workout.description}
+            </p>
+          </div>
+
+          {/* Muscle Groups */}
+          <div className="mt-5 flex flex-wrap gap-1.5">
+            {workout.muscleGroups.map((muscleGroup) => (
               <span
-                key={muscle}
-                className="rounded-full bg-blue-50 px-3 py-1 text-sm font-medium text-blue-700"
+                key={muscleGroup}
+                className="rounded-full bg-[#CCFF00] px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-black"
               >
-                {muscle}
+                {muscleGroup}
               </span>
             ))}
           </div>
 
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-            {workout.name}
-          </h1>
+          {/* Specs */}
+          <div className="mt-6 overflow-hidden rounded-xl border border-[#292D35] bg-[#181A1F]">
+            <SpecRow
+              icon={<Dumbbell />}
+              label="Equipment"
+              value={workout.equipment}
+            />
 
-          <p className="mt-4 leading-7 text-gray-600">{workout.description}</p>
+            <SpecRow
+              icon={<Gauge />}
+              label="Difficulty"
+              value={workout.difficulty}
+            />
 
-          <div className="mt-6 grid grid-cols-2 gap-4">
-            <div className="rounded-xl border border-gray-200 p-4">
-              <Clock3 className="mb-2 h-5 w-5 text-gray-700" />
-              <p className="text-sm text-gray-500">Duration</p>
-              <p className="mt-1 font-semibold text-gray-900">
-                {workout.duration} min
-              </p>
-            </div>
+            <SpecRow
+              icon={<Layers3 />}
+              label="Sets"
+              value={String(workout.sets)}
+            />
 
-            <div className="rounded-xl border border-gray-200 p-4">
-              <Flame className="mb-2 h-5 w-5 text-gray-700" />
-              <p className="text-sm text-gray-500">Calories</p>
-              <p className="mt-1 font-semibold text-gray-900">
-                {workout.caloriesBurned}
-              </p>
-            </div>
+            <SpecRow icon={<Repeat2 />} label="Reps" value={workout.reps} />
 
-            <div className="rounded-xl border border-gray-200 p-4">
-              <Dumbbell className="mb-2 h-5 w-5 text-gray-700" />
-              <p className="text-sm text-gray-500">Equipment</p>
-              <p className="mt-1 font-semibold text-gray-900">
-                {workout.equipment}
-              </p>
-            </div>
+            <SpecRow
+              icon={<Clock3 />}
+              label="Duration"
+              value={`${workout.duration} min`}
+            />
 
-            <div className="rounded-xl border border-gray-200 p-4">
-              <Target className="mb-2 h-5 w-5 text-gray-700" />
-              <p className="text-sm text-gray-500">Difficulty</p>
-              <p className="mt-1 font-semibold capitalize text-gray-900">
-                {workout.difficulty}
-              </p>
-            </div>
+            <SpecRow
+              icon={<Flame />}
+              label="Calories"
+              value={`${workout.caloriesBurned} kcal`}
+            />
+
+            <SpecRow
+              icon={<Star />}
+              label="Rating"
+              value={String(workout.rating)}
+              last
+            />
           </div>
 
-          <div className="mt-4 rounded-xl border border-gray-200 p-4">
-            <div className="flex items-center gap-2">
-              <Star className="h-5 w-5 fill-current text-yellow-500" />
-              <span className="font-semibold text-gray-900">
-                {workout.rating}
-              </span>
-              <span className="text-sm text-gray-500">rating</span>
-            </div>
-          </div>
-
-          <div className="mt-6 rounded-xl border border-gray-200 p-5">
-            <h2 className="text-lg font-semibold text-gray-900">
-              Workout Info
-            </h2>
-
-            <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <p className="text-gray-500">Sets</p>
-                <p className="mt-1 font-semibold text-gray-900">
-                  {workout.sets}
-                </p>
-              </div>
-
-              <div>
-                <p className="text-gray-500">Reps</p>
-                <p className="mt-1 font-semibold text-gray-900">
-                  {workout.reps}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-6">
-            <h2 className="text-lg font-semibold text-gray-900">
-              Instructions
+          {/* Instructions */}
+          <div className="mt-7">
+            <h2 className="text-[11px] font-black uppercase tracking-[0.15em] text-white">
+              INSTRUCTIONS
             </h2>
 
             <ol className="mt-4 space-y-3">
               {workout.instructions.map((instruction, index) => (
                 <li
-                  key={`${index}-${instruction}`}
-                  className="flex gap-3 text-sm leading-6 text-gray-600"
+                  key={`${workout.id}-${index}`}
+                  className="flex gap-3 text-xs leading-5 text-[#8A929D]"
                 >
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gray-900 text-xs font-semibold text-white">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#1F2024] text-[9px] font-bold text-[#CCFF00]">
                     {index + 1}
                   </span>
 
@@ -134,14 +127,44 @@ export default function WorkoutDetails({ workout }: WorkoutDetailsProps) {
             </ol>
           </div>
 
-          <button
-            type="button"
-            className="mt-8 w-full rounded-xl bg-black px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-gray-800"
-          >
-            Add to My Plan
-          </button>
+          {/* Actions */}
+          <div className="mt-7">
+            <WorkoutActions workout={workout} />
+          </div>
         </div>
       </div>
     </section>
+  );
+}
+
+function SpecRow({
+  icon,
+  label,
+  value,
+  last = false,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  last?: boolean;
+}) {
+  return (
+    <div
+      className={`flex items-center justify-between gap-4 px-4 py-3 ${
+        !last ? 'border-b border-[#292D35]' : ''
+      }`}
+    >
+      <div className="flex items-center gap-2">
+        <span className="text-[#666E79]">
+          <span className="[&>svg]:h-3.5 [&>svg]:w-3.5">{icon}</span>
+        </span>
+
+        <span className="text-[9px] font-bold uppercase tracking-[0.12em] text-[#747C87]">
+          {label}
+        </span>
+      </div>
+
+      <span className="text-right text-xs text-[#D1D5DB]">{value}</span>
+    </div>
   );
 }

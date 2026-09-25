@@ -34,101 +34,114 @@ const FitLogContext = createContext<FitLogContextType | undefined>(undefined);
 const PLAN_STORAGE_KEY = 'fitlog-plan';
 const SAVED_STORAGE_KEY = 'fitlog-saved';
 
-function getStoredWorkouts(key: string): Workout[] {
+function readStoredWorkouts(key: string): Workout[] {
   if (typeof window === 'undefined') {
     return [];
   }
 
   try {
-    const stored = localStorage.getItem(key);
+    const raw = localStorage.getItem(key);
 
-    if (!stored) {
+    if (!raw) {
       return [];
     }
 
-    const parsed: unknown = JSON.parse(stored);
+    const parsed: unknown = JSON.parse(raw);
 
-    return Array.isArray(parsed) ? (parsed as Workout[]) : [];
+    if (!Array.isArray(parsed)) {
+      return [];
+    }
+
+    return parsed.map((workout) => ({
+      ...workout,
+      id: String(workout.id),
+    })) as Workout[];
   } catch {
     return [];
   }
 }
 
 export function FitLogProvider({ children }: { children: ReactNode }) {
-  /*
-   * Start with empty arrays on both server and first client render.
-   * This prevents the server/client hydration mismatch caused by
-   * reading localStorage during useState initialization.
-   */
   const [plan, setPlan] = useState<Workout[]>([]);
   const [saved, setSaved] = useState<Workout[]>([]);
   const [hydrated, setHydrated] = useState(false);
 
   /*
-   * Load localStorage only after the first client render.
+   * Read localStorage only after hydration.
+   * This prevents the Plan counter hydration mismatch.
    */
   useEffect(() => {
-    setPlan(getStoredWorkouts(PLAN_STORAGE_KEY));
-    setSaved(getStoredWorkouts(SAVED_STORAGE_KEY));
+    setPlan(readStoredWorkouts(PLAN_STORAGE_KEY));
+    setSaved(readStoredWorkouts(SAVED_STORAGE_KEY));
     setHydrated(true);
   }, []);
 
   const addToPlan = useCallback((workout: Workout) => {
-    setPlan((currentPlan) => {
-      const alreadyExists = currentPlan.some((item) => item.id === workout.id);
+    setPlan((current) => {
+      const workoutId = String(workout.id);
 
-      if (alreadyExists) {
-        return currentPlan;
+      if (current.some((item) => String(item.id) === workoutId)) {
+        return current;
       }
 
-      if (currentPlan.length >= 5) {
-        return currentPlan;
+      if (current.length >= 5) {
+        return current;
       }
 
-      return [...currentPlan, workout];
+      return [
+        ...current,
+        {
+          ...workout,
+          id: workoutId,
+        },
+      ];
     });
   }, []);
 
   const removeFromPlan = useCallback((workoutId: string) => {
-    setPlan((currentPlan) =>
-      currentPlan.filter((item) => item.id !== workoutId)
+    setPlan((current) =>
+      current.filter((item) => String(item.id) !== String(workoutId))
     );
   }, []);
 
   const saveForLater = useCallback((workout: Workout) => {
-    setSaved((currentSaved) => {
-      const alreadySaved = currentSaved.some((item) => item.id === workout.id);
+    setSaved((current) => {
+      const workoutId = String(workout.id);
 
-      if (alreadySaved) {
-        return currentSaved;
+      if (current.some((item) => String(item.id) === workoutId)) {
+        return current;
       }
 
-      return [...currentSaved, workout];
+      return [
+        ...current,
+        {
+          ...workout,
+          id: workoutId,
+        },
+      ];
     });
   }, []);
 
   const removeFromSaved = useCallback((workoutId: string) => {
-    setSaved((currentSaved) =>
-      currentSaved.filter((item) => item.id !== workoutId)
+    setSaved((current) =>
+      current.filter((item) => String(item.id) !== String(workoutId))
     );
   }, []);
 
   const isInPlan = useCallback(
-    (workoutId: string) => plan.some((item) => item.id === workoutId),
+    (workoutId: string) =>
+      plan.some((item) => String(item.id) === String(workoutId)),
     [plan]
   );
 
   const isSaved = useCallback(
-    (workoutId: string) => saved.some((item) => item.id === workoutId),
+    (workoutId: string) =>
+      saved.some((item) => String(item.id) === String(workoutId)),
     [saved]
   );
 
-  /*
-   * Don't write anything to localStorage until the initial
-   * localStorage read has completed.
-   */
   useEffect(() => {
-    if (!hydrated || typeof window === 'undefined') {
+    if (!hydrated) {
       return;
     }
 
@@ -136,7 +149,7 @@ export function FitLogProvider({ children }: { children: ReactNode }) {
   }, [plan, hydrated]);
 
   useEffect(() => {
-    if (!hydrated || typeof window === 'undefined') {
+    if (!hydrated) {
       return;
     }
 
