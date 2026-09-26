@@ -205,7 +205,7 @@ export default function MyPlanPage() {
 
               <Link
                 href="/"
-                className="mt-6 inline-flex rounded-sm bg-[#CCFF00] px-5 py-2.5 text-[10px] font-extrabold uppercase tracking-widest text-black transition hover:bg-[#B8E600]"
+                className="mt-6 inline-flex rounded-sm bg-[#CCFF00] px-5 py-2.5 text-[10px] font-extrabold uppercase tracking-widest text-[#08090B]! transition hover:bg-[#B8E600]"
               >
                 Go to workouts
               </Link>
