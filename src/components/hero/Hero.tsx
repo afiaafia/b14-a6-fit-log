@@ -19,7 +19,8 @@ export default function Hero() {
                   '"Arial Narrow", "Roboto Condensed", "Helvetica Neue", Arial, sans-serif',
               }}
             >
-              TRAIN WITH INTENT. LOG
+              <span className="whitespace-nowrap">TRAIN WITH INTENT.</span>{' '}
+              <span className="lg:whitespace-nowrap">LOG</span>
               <br />
               EVERY SET.
             </h1>
